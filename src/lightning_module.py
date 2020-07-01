@@ -17,7 +17,12 @@ class LightningModel(pl.LightningModule):
             for param in backbone_model.parameters():
                 param.requires_grad = False
         self.siamese_model = get_class_by_name(models, hparams.main_model)(backbone_model, **hparams['model'])
-        self.criterion = get_class_by_name(losses, hparams.criterion_name)(**hparams['criterion'])
+
+        criterion_class = get_class_by_name(losses, hparams.criterion_name)
+        if 'criterion' in hparams:
+            self.criterion = criterion_class(**hparams['criterion'])
+        else:
+            self.criterion = criterion_class()
 
         self.conf_matrix = ConfusionMatrix()
     

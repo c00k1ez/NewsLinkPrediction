@@ -61,3 +61,39 @@ class OnlineTripletLoss(torch.nn.Module):
         
         return loss 
 
+
+class OnlineBCELoss(torch.nn.Module):
+    def __init__(self, sampler=SemiHardNegariveSampler(), reduction='mean'):
+        super(OnlineBCELoss, self).__init__()
+        self.sampler = sampler 
+        self.reduction = reduction
+        assert reduction in ['mean', 'sum', 'none']
+        self.bce = torch.nn.BCEWithLogitsLoss(reduction=reduction)
+
+    def _distance(self, t1, t2):
+        return (t1 - t2).norm(dim=1)
+
+    # model_outputs = {'anchor': torch.FloatTensor, 'positive': torch.FloatTensor}
+    def forward(self, model_outputs: Dict[str, Union[torch.FloatTensor, torch.cuda.FloatTensor]]):
+        anchor = model_outputs['anchor'] # shape [batch_size, embedding_size]
+        pos = model_outputs['positive'] # shape [batch_size, embedding_size]
+        neg = self.sampler.negative_samples(model_outputs) # shape [batch_size, embedding_size]
+
+        batch_size, emb_dim = pos.size()
+
+        anchor_pos_dist = self._distance(anchor, pos) # shape [batch_size,]
+        anchor_neg_dist = self._distance(anchor, neg) # shape [batch_size,]
+        dists = torch.cat([anchor_pos_dist, anchor_neg_dist])
+        labels = torch.FloatTensor([1] * batch_size + [0] * batch_size)
+        return self.bce(dists, labels)
+
+
+
+
+
+        
+
+
+
+
+

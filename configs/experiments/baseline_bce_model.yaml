@@ -1,0 +1,16 @@
+experiment_name: baseline
+
+backbone_model: BertModel
+freeze_backbone: true
+main_model: BaselineSiameseNetwork
+model_output_prob: false
+cos_margin: 0.5
+
+model:
+  encoder_hidden: 768
+  output_dim: 256
+
+criterion_name: OnlineBCELoss
+
+optimizer:
+  lr: 5e-5
