@@ -3,13 +3,20 @@ import json
 import math
 import random
 import argparse
+from google_drive_downloader import GoogleDriveDownloader as gdd
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_file", default='./data/broadcast_news.json')
+    parser.add_argument("--download_data", type=bool, default=True)
     args = parser.parse_args()
     FILE_PATH = args.data_file
+
+    
+    if args.download_data is True:
+        gdd.download_file_from_google_drive(file_id='1g8NP8cLV_v6ci3S9MoXHuGxtp7N2AnUY',
+                                        dest_path=args.data_file)
 
     random.seed(42)
 
