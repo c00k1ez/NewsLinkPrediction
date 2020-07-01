@@ -83,17 +83,7 @@ class OnlineBCELoss(torch.nn.Module):
 
         anchor_pos_dist = self._distance(anchor, pos) # shape [batch_size,]
         anchor_neg_dist = self._distance(anchor, neg) # shape [batch_size,]
-        dists = torch.cat([anchor_pos_dist, anchor_neg_dist])
+        dists = torch.cat([anchor_pos_dist, anchor_neg_dist]).cpu()
         labels = torch.FloatTensor([1] * batch_size + [0] * batch_size)
         return self.bce(dists, labels)
-
-
-
-
-
         
-
-
-
-
-
