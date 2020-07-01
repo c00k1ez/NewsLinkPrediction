@@ -4,4 +4,4 @@ omegaconf
 youtokentome==1.0.6
 comet_ml
 pytest
-googledrivedownloader
+transformers
