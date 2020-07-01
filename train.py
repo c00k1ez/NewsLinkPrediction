@@ -11,7 +11,7 @@ import transformers
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--experiment_config', type=str, default='./configs/experiments/baseline_metric_model.yaml')
+    parser.add_argument('--experiment_config', type=str, default='./configs/experiments/baseline_bce_model.yaml')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--data_path', type=str, default='./data/')
     args = parser.parse_args()
