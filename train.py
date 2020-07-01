@@ -34,5 +34,8 @@ if __name__ == "__main__":
     # step 4 : init model
     model = LightningModel(config)
     # -----------------------------------------------------
-    # step 4 : init trainer
+    # step 5 : init trainer
     trainer = pl.Trainer(**config['trainer'])
+    # -----------------------------------------------------
+    # step 6 : train model
+    trainer.fit(model, **loaders)

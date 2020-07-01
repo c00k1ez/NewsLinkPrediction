@@ -16,7 +16,7 @@ class LightningModel(pl.LightningModule):
         if hasattr(hparams, 'freeze_backbone') and hparams.freeze_backbone is True:
             for param in backbone_model.parameters():
                 param.requires_grad = False
-        self.siamese_model = get_class_by_name(models, hparams.main_model)(**hparams['model'])
+        self.siamese_model = get_class_by_name(models, hparams.main_model)(backbone_model, **hparams['model'])
         self.criterion = get_class_by_name(losses, hparams.criterion_name)(**hparams['criterion'])
 
         self.conf_matrix = ConfusionMatrix()
@@ -36,16 +36,18 @@ class LightningModel(pl.LightningModule):
     def validation_step(self, batch, batch_nb):
         outputs = self.forward(batch)
         loss = self.criterion(outputs)
-        labels = batch['label']
-        outputs = {'loss_val': loss}
+        labels = batch['label'].cpu()
+        ret = {'loss_val': loss}
         if self.hparams.model_output_prob is False:
             # shape : [batch_size, ]
             sim = torch.nn.functional.cosine_similarity(outputs['anchor'], outputs['positive'])
             sim[sim >= self.hparams.cos_margin] = 1
             sim[sim < self.hparams.cos_margin] = 0
+            sim = sim.cpu()
+            sim = sim.type(torch.LongTensor)
             matr = self.conf_matrix(sim, labels)
-            outputs['confusion_matrix'] = matr
-        return outputs
+            ret['confusion_matrix'] = matr
+        return ret
 
     def f1_score(self, matr: torch.Tensor):
         pr_1 = matr[0, 0] / (matr[0, 0] + matr[0, 1])
@@ -58,18 +60,10 @@ class LightningModel(pl.LightningModule):
 
     def validation_epoch_end(self, outputs):
         matr = sum([output['confusion_matrix'] for output in outputs])
-        loss_val = torch.cat([x['loss_val'] for x in outputs]).mean()
+        loss_val = torch.stack([x['loss_val'] for x in outputs]).mean()
         f1 = self.f1_score(matr)
         logs = {'val_loss': loss_val, 'macro_f1': f1}
         output = {
             'val_loss': loss_val,
             'log': logs
         }
-
-
-
-
-
-    
-
-    

@@ -39,8 +39,8 @@ def init_tokenizer(config: omegaconf.DictConfig):
     return tokenizer_class.from_pretrained(config.model_name)
 
 def read_dataset(data_path: str, debug=False) -> Tuple[Dict[str, Dict], Dict[str, Dict]]:
-    train_file = 'train.json' if debug is False else 'data_sample.json'
-    test_file = 'test.json'
+    test_file = 'test.json' if debug is False else 'data_sample.json'
+    train_file = 'train.json'
     files = [train_file, test_file]
     dataset = []
     for fl in files:
