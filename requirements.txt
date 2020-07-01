@@ -1,0 +1,6 @@
+torch>=1.5
+pytorch-lightning
+omegaconf
+youtokentome==1.0.6
+comet_ml
+pytest

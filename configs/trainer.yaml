@@ -1,0 +1,5 @@
+trainer:
+  max_epochs: 3
+  val_check_interval: 0.25
+  default_save_path: ./logs
+  gpus: 1

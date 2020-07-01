@@ -1,0 +1,5 @@
+model_name: 'DeepPavlov/rubert-base-cased'
+
+tokenizer:
+  module_name: transformers # or src for example
+  class_name: AutoTokenizer

@@ -1,0 +1,8 @@
+data_path: ./data/
+
+datasets:
+  news_pad_len: 512
+  broadcast_pad_len: 512
+
+loaders:
+  batch_size: 10
