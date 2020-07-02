@@ -36,7 +36,7 @@ class LightningModel(pl.LightningModule):
         outputs = self.forward(batch)
         loss = self.criterion(outputs)
         logs = {'train_loss': loss}
-        return {'loss':loss, 'log': logs}
+        return {'loss': loss, 'log': logs}
 
     def validation_step(self, batch, batch_nb):
         outputs = self.forward(batch)
@@ -67,9 +67,11 @@ class LightningModel(pl.LightningModule):
         matr = sum([output['confusion_matrix'] for output in outputs])
         loss_val = torch.stack([x['loss_val'] for x in outputs]).mean()
         f1 = self.f1_score(matr)
-        logs = {'val_loss': loss_val, 'macro_f1': f1}
         output = {
             'val_loss': loss_val,
             'macro_f1': f1,
-            'log': logs
+            'log': {
+                'val_loss': loss_val, 
+                'macro_f1': f1
+            }
         }

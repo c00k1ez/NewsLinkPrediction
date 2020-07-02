@@ -15,6 +15,7 @@ def get_class_by_name(module, model_name : str):
         model = getattr(module, model_name)
     return model
 
+# TODO: implement replacing cfg elements at the main cfg if they defined at the experiment cfg
 def get_config(exp_path: str, cfg_path: str = './configs/'):
     files = os.listdir(cfg_path)
     cfgs = [os.path.join(cfg_path, cfg) for cfg in files if 'yaml' in cfg]
