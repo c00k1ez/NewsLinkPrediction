@@ -70,5 +70,6 @@ class LightningModel(pl.LightningModule):
         logs = {'val_loss': loss_val, 'macro_f1': f1}
         output = {
             'val_loss': loss_val,
+            'macro_f1': f1,
             'log': logs
         }

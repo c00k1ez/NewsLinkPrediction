@@ -6,4 +6,4 @@ datasets:
 
 loaders:
   batch_size: 10
-  num_workers: 2
+  num_workers: 1
