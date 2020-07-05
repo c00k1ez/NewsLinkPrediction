@@ -15,7 +15,7 @@ class SemiHardNegariveSampler:
         batch_size, embedding_size = pos.shape
         anchor = anchor / anchor.norm(dim=1).unsqueeze(1).repeat(1, embedding_size)
         pos = pos / pos.norm(dim=1).unsqueeze(1).repeat(1, embedding_size)
-        dist_matrix = torch.mm(anchor, pos.t()) # shape [batch_size, batch_size]
+        dist_matrix = torch.mm(anchor, pos.t()).cpu() # shape [batch_size, batch_size]
         #dist_matrix = torch.cdist(anchor, pos).cpu() # shape [batch_size, batch_size]
         
         mask = torch.ones(anchor.shape[0], pos.shape[0]) - torch.diag(torch.ones(pos.shape[0])) # shape [batch_size, batch_size]
