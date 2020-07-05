@@ -75,3 +75,5 @@ class LightningModel(pl.LightningModule):
                 'macro_f1': f1
             }
         }
+
+        return output
