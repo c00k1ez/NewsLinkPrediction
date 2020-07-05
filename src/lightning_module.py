@@ -69,7 +69,6 @@ class LightningModel(pl.LightningModule):
         f1 = self.f1_score(matr)
         output = {
             'val_loss': loss_val,
-            'macro_f1': f1,
             'log': {
                 'val_loss': loss_val, 
                 'macro_f1': f1
