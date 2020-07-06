@@ -35,12 +35,12 @@ if __name__ == "__main__":
     model = LightningModel(config)
     # -----------------------------------------------------
     # step 5 : init logger(s)
-    logger = None
+    logger = False
     if 'logger' in config:
         logger = pl.loggers.CometLogger(**config['logger'])
     # -----------------------------------------------------
     # step 6 : init logger(s)
-    trainer = pl.Trainer(**config['trainer'])
+    trainer = pl.Trainer(**config['trainer'], logger=logger)
     # -----------------------------------------------------
     # step 7 : train model
     trainer.fit(model, **loaders)
