@@ -1,4 +1,4 @@
-experiment_name: baseline
+experiment_name: baseline_bce_bert
 
 backbone_model: BertModel
 freeze_backbone: true

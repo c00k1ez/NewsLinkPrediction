@@ -37,7 +37,7 @@ if __name__ == "__main__":
     # step 5 : init logger(s)
     logger = False
     if 'logger' in config:
-        logger = pl.loggers.CometLogger(**config['logger'])
+        logger = pl.loggers.CometLogger(**config['logger'], experiment_name=config.experiment_name)
     # -----------------------------------------------------
     # step 6 : init logger(s)
     trainer = pl.Trainer(**config['trainer'], logger=logger)
