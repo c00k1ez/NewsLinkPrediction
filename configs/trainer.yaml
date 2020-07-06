@@ -1,4 +1,4 @@
 trainer:
-  max_epochs: 3
-  val_check_interval: 0.05
+  max_epochs: 1
+  val_check_interval: 0.2
   gpus: 1
