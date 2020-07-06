@@ -34,7 +34,7 @@ class TestDataset:
             news_len.append(len(sample['news']))
         neg_pairs = sum([(len(data)-1) * n for n in news_len])
         pos_pairs = sum(news_len)
-        assert (neg_pairs == 1902360) and (pos_pairs == 4980)
+        assert (neg_pairs == 2184) and (pos_pairs == 156)
             
     def test_val_dataset(self):
         tokenizer = transformers.AutoTokenizer.from_pretrained('DeepPavlov/rubert-base-cased')
