@@ -23,7 +23,7 @@ if __name__ == "__main__":
     tokenizer = init_tokenizer(config)
     # -----------------------------------------------------
     # step 3 : init loaders
-    train, test = read_dataset(config.data_path, debug=True)
+    train, test = read_dataset(config.data_path, debug=False)
     train = PairsDataset(train, tokenizer, **config['datasets'])
     test = PairsDataset(test, tokenizer, mode='test', **config['datasets'])
     loaders = {
