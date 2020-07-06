@@ -39,7 +39,8 @@ def save_response_content(response, destination):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_file", default='./data/broadcast_news.json')
-    parser.add_argument("--download_data", type=bool, default=True)
+    parser.add_argument("--download_data", type=bool, default=False)
+    parser.add_argument("--train_size", type=int, default=0.995)
     args = parser.parse_args()
     FILE_PATH = args.data_file
 
@@ -77,7 +78,7 @@ if __name__ == '__main__':
     inds = list(data.keys())
     random.shuffle(inds)
 
-    train_len = math.ceil(0.95 * len(data))
+    train_len = math.ceil(args.train_size * len(data))
 
     print(len(data), train_len, len(data) - train_len)
 
