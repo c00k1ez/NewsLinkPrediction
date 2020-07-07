@@ -1,7 +1,7 @@
 torch>=1.5
-pytorch-lightning
+pytorch-lightning>=0.8.4
 omegaconf
 youtokentome==1.0.6
 comet_ml
 pytest
-transformers
+transformers>=3.0.0
