@@ -16,11 +16,11 @@
 
 В `./configs/experiments/*` лежат именно конфиги для экспериментов. Параметры, записанные в них, имеют наивысший приоритет, т.е в случае конфликта с параметром из `./configs/*`, он будет перезаписан из эксперимента (пока не реализовано).
 
-`trainer.yaml`:
+### trainer.yaml:
 
 Любые параметры для `pytorch_lightning.Trainer`.
 
-`tokenizer.yaml`:
+### tokenizer.yaml:
 
 **model_name** - имя модели из `transformers` (если она используется).
 
@@ -28,7 +28,7 @@
 
 **tokenizer/class_name** - Имя самого класса токенайзера.
 
-`data.yaml`:
+### data.yaml:
 
 **data_path** - путь до папки с данными.
 
@@ -36,7 +36,7 @@
 
 **loaders/*** - параметры для даталоадера.
 
-`experiments/baseline_*_model.yaml`:
+### experiments/baseline_*_model.yaml:
 
 **experiment_name** - имя эксперимента для логгирования.
 
