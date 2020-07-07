@@ -9,6 +9,8 @@ from src.lightning_module import LightningModel
 import pytorch_lightning as pl
 import transformers
 
+import os
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--experiment_config', type=str, default='./configs/experiments/baseline_bce_model.yaml')
@@ -38,6 +40,12 @@ if __name__ == "__main__":
     logger = False
     if 'logger' in config:
         logger = pl.loggers.CometLogger(**config['logger'], experiment_name=config.experiment_name)
+    else:
+        logger = pl.loggers.TensorBoardLogger(
+            save_dir=os.getcwd(),
+            version=1,
+            name='lightning_logs'
+        )
     # -----------------------------------------------------
     # step 6 : init logger(s)
     trainer = pl.Trainer(**config['trainer'], logger=logger)
