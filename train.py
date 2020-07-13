@@ -37,15 +37,15 @@ if __name__ == "__main__":
     model = LightningModel(config)
     # -----------------------------------------------------
     # step 5 : init logger(s)
-    logger = False
-    if 'logger' in config:
-        logger = pl.loggers.CometLogger(**config['logger'], experiment_name=config.experiment_name)
-    else:
-        logger = pl.loggers.TensorBoardLogger(
+    logger = pl.loggers.TensorBoardLogger(
             save_dir=os.getcwd(),
             version=1,
             name='lightning_logs'
         )
+    if 'logger' in config:
+        comet_logger = pl.loggers.CometLogger(**config['logger'], experiment_name=config.experiment_name)
+        logger = [logger, comet_logger]
+        
     # -----------------------------------------------------
     # step 6 : init logger(s)
     trainer = pl.Trainer(**config['trainer'], logger=logger)
