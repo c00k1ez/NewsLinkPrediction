@@ -12,7 +12,7 @@ model:
 
 criterion_name: OnlineTripletLoss
 criterion:
-  margin: 1
+  margin: 0.5
 
 optimizer:
   lr: 5e-5

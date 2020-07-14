@@ -3,7 +3,7 @@ import torch.nn.functional as F
 from typing import Dict, Union
 
 
-class SemiHardNegariveSampler:
+class HardNegariveSampler:
     def __init__(self, margin=None):
         self.margin = margin
 
@@ -30,7 +30,7 @@ class SemiHardNegariveSampler:
 
 
 class OnlineTripletLoss(torch.nn.Module):
-    def __init__(self, margin: int, sampler=SemiHardNegariveSampler(), reduction='mean', return_logits=False):
+    def __init__(self, margin: int, sampler=HardNegariveSampler(), reduction='mean', return_logits=False):
         super(OnlineTripletLoss, self).__init__()
         self.margin = margin
         assert reduction in ['mean', 'none', 'sum']
@@ -67,7 +67,7 @@ class OnlineTripletLoss(torch.nn.Module):
 
 
 class OnlineBCELoss(torch.nn.Module):
-    def __init__(self, sampler=SemiHardNegariveSampler(), reduction='mean'):
+    def __init__(self, sampler=HardNegariveSampler(), reduction='mean'):
         super(OnlineBCELoss, self).__init__()
         self.sampler = sampler 
         self.reduction = reduction
@@ -75,7 +75,7 @@ class OnlineBCELoss(torch.nn.Module):
         self.bce = torch.nn.BCEWithLogitsLoss(reduction=reduction)
 
     def _distance(self, t1, t2):
-        return (t1 - t2).norm(dim=1)
+        return torch.cosine_similarity(t1, t2)
 
     # model_outputs = {'anchor': torch.FloatTensor, 'positive': torch.FloatTensor}
     def forward(self, model_outputs: Dict[str, Union[torch.FloatTensor, torch.cuda.FloatTensor]]):

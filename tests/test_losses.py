@@ -2,11 +2,11 @@ import torch
 
 import pytest 
 
-from src.losses import OnlineTripletLoss, SemiHardNegariveSampler, OnlineBCELoss
+from src.losses import OnlineTripletLoss, HardNegariveSampler, OnlineBCELoss
 
 class TestLosses:
     def test_sampler(self):
-        sampler = SemiHardNegariveSampler()
+        sampler = HardNegariveSampler()
         bs = 5
         emb_size = 20
         test_data = {
@@ -16,7 +16,7 @@ class TestLosses:
         assert list(sampler.negative_samples(test_data).shape) == [bs, emb_size]
 
     def test_online_triplet_loss(self):
-        sampler = SemiHardNegariveSampler()
+        sampler = HardNegariveSampler()
         criterion = OnlineTripletLoss(margin=1, sampler=sampler)
         bs = 5
         emb_size = 20
@@ -28,7 +28,7 @@ class TestLosses:
         assert (type(t.item()) == float) and (torch.isnan(t).item() is False)
 
     def test_online_bce_loss(self):
-        sampler = SemiHardNegariveSampler()
+        sampler = HardNegariveSampler()
         criterion = OnlineBCELoss(sampler=sampler)
         bs = 5
         emb_size = 20
