@@ -20,7 +20,14 @@ class HardNegariveSampler:
         
         mask = torch.ones(anchor.shape[0], pos.shape[0]) - torch.diag(torch.ones(pos.shape[0])) # shape [batch_size, batch_size]
         dist_matrix = dist_matrix * mask
-        neg_samples = dist_matrix.max(dim=1)[1] # choose the closest examples as negative samples
+        if self.margin is None:
+            neg_samples = dist_matrix.max(dim=1)[1] # choose the closest examples as negative samples
+        else:
+            margin = torch.FloatTensor([[self.margin]]).repeat(batch_size, batch_size)
+            neg_samples = dist_matrix - margin
+            neg_samples = neg_samples * mask
+            neg_samples[neg_samples == 0.] = float('inf')
+            neg_samples = neg_samples.min(dim=1)[1]
         neg_samples = neg_samples.unsqueeze(1).repeat(1, pos.shape[1])
         # neg_samples shape [batch_size, embedding_size]
         neg = torch.gather(pos.cpu(), index=neg_samples, dim=0)
@@ -30,13 +37,13 @@ class HardNegariveSampler:
 
 
 class OnlineTripletLoss(torch.nn.Module):
-    def __init__(self, margin: int, sampler=HardNegariveSampler(), reduction='mean', return_logits=False):
+    def __init__(self, margin: int, sampler=HardNegariveSampler, reduction='mean', return_logits=False):
         super(OnlineTripletLoss, self).__init__()
         self.margin = margin
         assert reduction in ['mean', 'none', 'sum']
         self.reduction = reduction
         self.return_logits = return_logits
-        self.sampler = sampler
+        self.sampler = sampler(margin)
 
     def _distance(self, t1, t2):
         return torch.cosine_similarity(t1, t2)
@@ -67,9 +74,9 @@ class OnlineTripletLoss(torch.nn.Module):
 
 
 class OnlineBCELoss(torch.nn.Module):
-    def __init__(self, sampler=HardNegariveSampler(), reduction='mean'):
+    def __init__(self, margin=None, sampler=HardNegariveSampler, reduction='mean'):
         super(OnlineBCELoss, self).__init__()
-        self.sampler = sampler 
+        self.sampler = sampler(margin)
         self.reduction = reduction
         assert reduction in ['mean', 'sum', 'none']
         self.bce = torch.nn.BCEWithLogitsLoss(reduction=reduction)

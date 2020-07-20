@@ -11,6 +11,8 @@ model:
   output_dim: 256
 
 criterion_name: OnlineBCELoss
+criterion:
+  margin: 0.3
 
 optimizer:
   lr: 5e-5
