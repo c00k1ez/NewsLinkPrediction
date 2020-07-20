@@ -24,7 +24,7 @@ class HardNegariveSampler:
             neg_samples = dist_matrix.max(dim=1)[1] # choose the closest examples as negative samples
         else:
             margin = torch.FloatTensor([[self.margin]]).repeat(batch_size, batch_size)
-            neg_samples = dist_matrix - margin
+            neg_samples = torch.abs(dist_matrix - margin)
             neg_samples = neg_samples * mask
             neg_samples[neg_samples == 0.] = float('inf')
             neg_samples = neg_samples.min(dim=1)[1]
