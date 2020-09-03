@@ -19,13 +19,13 @@ def get_config(
         exp_path: str,
         cfg_path: str = './configs/'
         ):
-    exp_path = cfg_path + 'experiments/'
-    path = cfg_path + exp_path
+    exp_path_dir = cfg_path + 'experiments/'
+    path = cfg_path + exp_path_dir
     files = [cfg_path+fl for fl in os.listdir(cfg_path) if 'yaml' in fl]
     base_cfg = [omegaconf.OmegaConf.load(cfg) for cfg in files]
     base_cfg = omegaconf.OmegaConf.merge(*base_cfg)
 
-    exp_cfg = omegaconf.OmegaConf.load(exp_path + exp_path)
+    exp_cfg = omegaconf.OmegaConf.load(exp_path_dir + exp_path)
     cfg = omegaconf.OmegaConf.merge(base_cfg, exp_cfg)
     return cfg
 

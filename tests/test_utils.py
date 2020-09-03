@@ -15,7 +15,7 @@ class TestUtils:
         assert model_class in [None, models.BaselineSiameseNetwork]
 
     def test_get_config(self):
-        cfg = utils.get_config('./configs/experiments/baseline_bce_model.yaml')
+        cfg = utils.get_config('baseline_bce_model.yaml')
         assert type(cfg) == omegaconf.dictconfig.DictConfig
 
     def test_init_tokenizer(self):
