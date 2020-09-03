@@ -13,7 +13,7 @@ class TestLosses:
             'anchor': torch.rand((bs, emb_size)),
             'positive': torch.rand((bs, emb_size))
         }
-        neg, _ = sampler.negative_samples(test_data)
+        neg = sampler.negative_samples(test_data)
         assert list(neg.shape) == [bs, emb_size]
 
     def test_online_triplet_loss(self):
@@ -49,5 +49,5 @@ class TestLosses:
             'anchor': torch.rand((bs, emb_size)),
             'positive': torch.rand((bs, emb_size))
         }
-        neg, _ = sampler.negative_samples(test_data)
+        neg = sampler.negative_samples(test_data)
         assert list(neg.shape) == [bs, emb_size]
