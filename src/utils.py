@@ -15,15 +15,19 @@ def get_class_by_name(module, model_name : str):
         model = getattr(module, model_name)
     return model
 
-# TODO: implement replacing cfg elements at the main cfg if they defined at the experiment cfg
-def get_config(exp_path: str, cfg_path: str = './configs/'):
-    files = os.listdir(cfg_path)
-    cfgs = [os.path.join(cfg_path, cfg) for cfg in files if 'yaml' in cfg]
-    cfgs = [OmegaConf.load(cfg) for cfg in cfgs]
-    exp = OmegaConf.load(exp_path)
-    cfgs.append(exp)
-    cfgs = OmegaConf.merge(*cfgs)
-    return cfgs
+def get_config(
+        exp_path: str,
+        cfg_path: str = './configs/'
+        ):
+    exp_path = cfg_path + 'experiments/'
+    path = cfg_path + exp_path
+    files = [cfg_path+fl for fl in os.listdir(cfg_path) if 'yaml' in fl]
+    base_cfg = [omegaconf.OmegaConf.load(cfg) for cfg in files]
+    base_cfg = omegaconf.OmegaConf.merge(*base_cfg)
+
+    exp_cfg = omegaconf.OmegaConf.load(exp_path + exp_path)
+    cfg = omegaconf.OmegaConf.merge(base_cfg, exp_cfg)
+    return cfg
 
 def seed_all(seed: int) -> None:
     np.random.seed(seed)

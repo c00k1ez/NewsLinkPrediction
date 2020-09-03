@@ -3,41 +3,44 @@ import torch.nn.functional as F
 from typing import Dict, Union
 
 
-class HardNegariveSampler:
-    def __init__(self, margin=None):
+class NegariveSampler:
+    def __init__(self, margin=None, number_of_neg_samples=1):
         self.margin = margin
+        self.number_of_neg_samples = number_of_neg_samples
+        assert number_of_neg_samples == 1 and margin is None or number_of_neg_samples > 1 and margin is not None
 
-    def negative_samples(self, 
-                         data: Dict[str, Union[torch.FloatTensor, torch.cuda.FloatTensor]]
-                        ) -> Union[torch.FloatTensor, torch.cuda.FloatTensor]:
+    def negative_samples(
+            self,
+            data: Dict[str, Union[torch.FloatTensor, torch.cuda.FloatTensor]]
+            ) -> Union[torch.FloatTensor, torch.cuda.FloatTensor]:
         anchor = data['anchor'] # shape [batch_size, embedding_size]
         pos = data['positive'] # shape [batch_size, embedding_size]
         batch_size, embedding_size = pos.shape
         anchor = anchor / anchor.norm(dim=1).unsqueeze(1).repeat(1, embedding_size)
         pos = pos / pos.norm(dim=1).unsqueeze(1).repeat(1, embedding_size)
-        dist_matrix = torch.mm(anchor, pos.t()).cpu() # shape [batch_size, batch_size]
+        dist_matrix = torch.mm(anchor, pos.t()).type_as(pos) # shape [batch_size, batch_size]
         #dist_matrix = torch.cdist(anchor, pos).cpu() # shape [batch_size, batch_size]
         
-        mask = torch.ones(anchor.shape[0], pos.shape[0]) - torch.diag(torch.ones(pos.shape[0])) # shape [batch_size, batch_size]
+        mask = torch.ones(anchor.shape[0], pos.shape[0]) - torch.diag(torch.ones(pos.shape[0])).type_as(pos) # shape [batch_size, batch_size]
         dist_matrix = dist_matrix * mask
         if self.margin is None:
             neg_samples = dist_matrix.max(dim=1)[1] # choose the closest examples as negative samples
         else:
-            margin = torch.FloatTensor([[self.margin]]).repeat(batch_size, batch_size)
-            neg_samples = torch.abs(dist_matrix - margin)
+            margin = torch.FloatTensor([[self.margin]]).repeat(batch_size, batch_size).type_as(pos)
+            neg_samples = torch.abs(dist_matrix - margin).type_as(pos)
             neg_samples = neg_samples * mask
-            neg_samples[neg_samples == 0.] = float('inf')
-            neg_samples = neg_samples.min(dim=1)[1]
+            neg_samples[neg_samples == 0.] = float('-inf')
+            neg_samples = neg_samples.max(dim=1)[1]
         neg_samples = neg_samples.unsqueeze(1).repeat(1, pos.shape[1])
         # neg_samples shape [batch_size, embedding_size]
-        neg = torch.gather(pos.cpu(), index=neg_samples, dim=0)
+        neg = torch.gather(pos, index=neg_samples, dim=0)
         neg = neg.type_as(pos)
-        return neg
+        return neg, [neg_samples, dist_matrix]
 
 
 
 class OnlineTripletLoss(torch.nn.Module):
-    def __init__(self, margin: int, sampler=HardNegariveSampler, reduction='mean', return_logits=False):
+    def __init__(self, margin: int, sampler=NegariveSampler, reduction='mean', return_logits=False):
         super(OnlineTripletLoss, self).__init__()
         self.margin = margin
         assert reduction in ['mean', 'none', 'sum']
@@ -74,7 +77,7 @@ class OnlineTripletLoss(torch.nn.Module):
 
 
 class OnlineBCELoss(torch.nn.Module):
-    def __init__(self, margin=None, sampler=HardNegariveSampler, reduction='mean'):
+    def __init__(self, margin=None, sampler=NegariveSampler, reduction='mean'):
         super(OnlineBCELoss, self).__init__()
         self.sampler = sampler(margin)
         self.reduction = reduction

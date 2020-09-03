@@ -16,6 +16,7 @@ if __name__ == "__main__":
     parser.add_argument('--experiment_config', type=str, default='./configs/experiments/baseline_bce_model.yaml')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--data_path', type=str, default='./data/')
+    parser.add_argument('--use_comet', type=bool, default=False)
     args = parser.parse_args()
     # -----------------------------------------------------
     # step 1 : init config
@@ -42,7 +43,7 @@ if __name__ == "__main__":
             version=1,
             name='lightning_logs'
         )
-    if 'logger' in config:
+    if 'logger' in config and args.use_comet:
         comet_logger = pl.loggers.CometLogger(**config['logger'], experiment_name=config.experiment_name)
         logger = [logger, comet_logger]
         

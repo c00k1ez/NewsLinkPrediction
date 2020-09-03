@@ -31,4 +31,4 @@ class TestUtils:
 
     def test_read_dataset(self):
         train, test = utils.read_dataset('./data/', debug=True)
-        assert (type(train)==dict) and (type(test)==dict)
+        assert (type(train) == dict) and (type(test) == dict)
