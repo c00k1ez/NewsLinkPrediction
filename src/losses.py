@@ -35,7 +35,7 @@ class NegariveSampler:
         # neg_samples shape [batch_size, embedding_size]
         neg = torch.gather(pos, index=neg_samples, dim=0)
         neg = neg.type_as(pos)
-        return neg, [neg_samples, dist_matrix]
+        return neg
 
 
 
