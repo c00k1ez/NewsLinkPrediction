@@ -21,7 +21,7 @@ class NegariveSampler:
         dist_matrix = torch.mm(anchor, pos.t()).type_as(pos) # shape [batch_size, batch_size]
         #dist_matrix = torch.cdist(anchor, pos).cpu() # shape [batch_size, batch_size]
         
-        mask = torch.ones(anchor.shape[0], pos.shape[0]) - torch.diag(torch.ones(pos.shape[0])).type_as(pos) # shape [batch_size, batch_size]
+        mask = torch.ones(anchor.shape[0], pos.shape[0]).type_as(pos) - torch.diag(torch.ones(pos.shape[0])).type_as(pos) # shape [batch_size, batch_size]
         dist_matrix = dist_matrix * mask
         if self.margin is None:
             neg_samples = dist_matrix.max(dim=1)[1] # choose the closest examples as negative samples
