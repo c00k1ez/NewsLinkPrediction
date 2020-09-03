@@ -7,7 +7,7 @@ class NegariveSampler:
     def __init__(self, margin=None, number_of_neg_samples=1):
         self.margin = margin
         self.number_of_neg_samples = number_of_neg_samples
-        assert number_of_neg_samples == 1 and margin is None or number_of_neg_samples > 1 and margin is not None
+        assert number_of_neg_samples == 1 and margin is None or number_of_neg_samples >= 1 and margin is not None
 
     def negative_samples(
             self,
