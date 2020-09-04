@@ -15,8 +15,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--experiment_config', type=str, default='baseline_bce_model.yaml')
     parser.add_argument('--seed', type=int, default=42)
-    parser.add_argument('--data_path', type=str, default='./data/')
     parser.add_argument('--use_comet', type=bool, default=False)
+    parser.add_argument('--gpus', type=int, default='0')
+    parser.add_argument('--distributed_backend', type=str, default=None, choices=[None, 'ddp', 'ddp_cpu', 'dp'])
+
     args = parser.parse_args()
     # -----------------------------------------------------
     # step 1 : init config
@@ -46,10 +48,15 @@ if __name__ == "__main__":
     if 'logger' in config and args.use_comet:
         comet_logger = pl.loggers.CometLogger(**config['logger'], experiment_name=config.experiment_name)
         logger = [logger, comet_logger]
-        
+    
     # -----------------------------------------------------
-    # step 6 : init logger(s)
-    trainer = pl.Trainer(**config['trainer'], logger=logger)
+    # step 6 : init Trainer
+    trainer = pl.Trainer(
+        **config['trainer'],
+        logger=logger,
+        gpus=args.gpus,
+        distributed_backend=args.distributed_backend
+    )
     # -----------------------------------------------------
     # step 7 : train model
     trainer.fit(model, **loaders)
