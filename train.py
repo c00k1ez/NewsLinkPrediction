@@ -20,6 +20,7 @@ if __name__ == "__main__":
     parser.add_argument('--distributed_backend', type=str, default=None, choices=[None, 'ddp', 'ddp_cpu', 'dp'])
 
     args = parser.parse_args()
+    pl.seed_everything(args.seed)
     # -----------------------------------------------------
     # step 1 : init config
     config = get_config(args.experiment_config)

@@ -5,4 +5,4 @@ datasets:
   broadcast_pad_len: 512
 
 loaders:
-  batch_size: 250
+  batch_size: 250 # for 16gb Tesla P100
