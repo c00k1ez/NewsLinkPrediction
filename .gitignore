@@ -5,3 +5,4 @@ __pycache__/
 configs/logger.yaml
 lightning_logs/*
 .DS_Store
+lightning_logs_esports-research/*
