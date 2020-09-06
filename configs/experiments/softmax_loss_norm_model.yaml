@@ -1,4 +1,4 @@
-experiment_name: softmax_loss_bert
+experiment_name: softmax_loss_with_cosine_similarity_bert
 
 backbone_model: BertModel
 freeze_backbone: true
@@ -12,7 +12,8 @@ model:
 
 criterion_name: SoftmaxLoss
 
-#criterion:
+criterion:
+  norm_vectors: true
 #  margin: 0.3
 
 optimizer:
