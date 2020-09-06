@@ -24,4 +24,4 @@ trainer:
 
 loaders:
   batch_size: 250 # for 16gb Tesla P100
-  num_workers: 8
+  num_workers: 4
