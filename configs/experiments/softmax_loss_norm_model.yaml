@@ -23,5 +23,5 @@ trainer:
   max_epochs: 2
 
 loaders:
-  batch_size: 250 # for 16gb Tesla P100
-  num_workers: 4
+  batch_size: 300 # for 16gb Tesla P100
+#  num_workers: 4
