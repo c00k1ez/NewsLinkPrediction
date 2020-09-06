@@ -23,6 +23,7 @@ if __name__ == "__main__":
     pl.seed_everything(args.seed)
     # -----------------------------------------------------
     # step 1 : init config
+    print('Use {} config'.format(args.experiment_config))
     config = get_config(args.experiment_config)
     # -----------------------------------------------------
     # step 2 : init tokenizer
