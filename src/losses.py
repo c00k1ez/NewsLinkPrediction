@@ -106,10 +106,11 @@ class SoftmaxLoss(torch.nn.Module):
     '''
     Read more about this loss here https://arxiv.org/abs/1902.08564
     '''
-    def __init__(self, margin=None, reduction='mean'):
+    def __init__(self, margin=None, norm_vectors=True, reduction='mean'):
         super(SoftmaxLoss, self).__init__()
         self.margin = margin
         self.reduction = reduction
+        self.norm_vectors = norm_vectors
         assert reduction in ['mean', 'sum', 'none']
         self.criterion = torch.nn.CrossEntropyLoss(reduction=reduction)
 
@@ -120,15 +121,16 @@ class SoftmaxLoss(torch.nn.Module):
 
         batch_size, emb_dim = pos.size()
         
-        anchor = anchor / anchor.norm(dim=1).unsqueeze(1).repeat(1, emb_dim)
-        pos = pos / pos.norm(dim=1).unsqueeze(1).repeat(1, emb_dim)
+        if self.norm_vectors:
+            anchor = anchor / anchor.norm(dim=1).unsqueeze(1).repeat(1, emb_dim)
+            pos = pos / pos.norm(dim=1).unsqueeze(1).repeat(1, emb_dim)
 
         scores = anchor @ pos.t()
 
         if self.margin is not None:
             scores -= (torch.eye(batch_size) * self.margin).type_as(pos)
         
-        targets = torch.arange(batch_size).type_as(pos)
+        targets = torch.arange(batch_size).type_as(pos).long()
         loss = self.criterion(scores, targets)
 
         return loss
