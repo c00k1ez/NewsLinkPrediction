@@ -100,4 +100,38 @@ class OnlineBCELoss(torch.nn.Module):
         dists = torch.cat([anchor_pos_dist, anchor_neg_dist]).type_as(pos)
         labels = torch.FloatTensor([1] * batch_size + [0] * batch_size).type_as(pos)
         return self.bce(dists, labels)
+
+
+class SoftmaxLoss(torch.nn.Module):
+    '''
+    Read more about this loss here https://arxiv.org/abs/1902.08564
+    '''
+    def __init__(self, margin=None, reduction='mean'):
+        super(SoftmaxLoss, self).__init__()
+        self.margin = margin
+        self.reduction = reduction
+        assert reduction in ['mean', 'sum', 'none']
+        self.criterion = torch.nn.CrossEntropyLoss(reduction=reduction)
+
+    # model_outputs = {'anchor': torch.FloatTensor, 'positive': torch.FloatTensor}
+    def forward(self, model_outputs: Dict[str, Union[torch.FloatTensor, torch.cuda.FloatTensor]]):
+        anchor = model_outputs['anchor'] # shape [batch_size, embedding_size]
+        pos = model_outputs['positive'] # shape [batch_size, embedding_size]
+
+        batch_size, emb_dim = pos.size()
         
+        anchor = anchor / anchor.norm(dim=1).unsqueeze(1).repeat(1, emb_dim)
+        pos = pos / pos.norm(dim=1).unsqueeze(1).repeat(1, emb_dim)
+
+        scores = anchor @ pos.t()
+
+        if self.margin is not None:
+            scores -= (torch.eye(batch_size) * self.margin).type_as(pos)
+        
+        targets = torch.arange(batch_size).type_as(pos)
+        loss = self.criterion(scores, targets)
+
+        return loss
+
+
+
