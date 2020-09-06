@@ -1,7 +1,10 @@
+import logging
+
 import torch
 import pytorch_lightning as pl
 from pytorch_lightning.metrics.classification import ConfusionMatrix
 import transformers
+import numpy as np
 
 import src.models as models
 import src.losses as losses
@@ -10,6 +13,8 @@ from src.utils import get_class_by_name
 class LightningModel(pl.LightningModule):
     def __init__(self, hparams):
         super(LightningModel, self).__init__()
+        logging.basicConfig(filename='logs/{}.log'.format(hparams.experiment_name), level=logging.INFO)
+
         self.hparams = hparams
         backbone_model_class = get_class_by_name(transformers, hparams.backbone_model)
         backbone_model = backbone_model_class.from_pretrained(hparams.model_name)
@@ -67,6 +72,7 @@ class LightningModel(pl.LightningModule):
         matr = sum([output['confusion_matrix'] for output in outputs])
         loss_val = torch.stack([x['loss_val'] for x in outputs]).mean()
         total_f1, [f1_1class, f1_2class] = self.f1_score(matr)
+        logging.info('log confusion matrix at {} step: {} \n'.format(self.global_step, np.matrix(matr.tolist())))
         output = {
             'val_loss': loss_val,
             'log': {
