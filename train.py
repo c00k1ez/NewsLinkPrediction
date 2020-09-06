@@ -1,3 +1,5 @@
+import comet_ml
+
 import argparse
 
 import torch 
