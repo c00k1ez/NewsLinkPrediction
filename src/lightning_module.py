@@ -61,18 +61,19 @@ class LightningModel(pl.LightningModule):
         rec_2 = matr[1, 1] / (matr[1, 1] + matr[0, 1])
         f1_1 = 2 * pr_1 * rec_1 / (pr_1 + rec_1)
         f1_2 = 2 * pr_2 * rec_2 / (pr_2 + rec_2)
-        return (f1_1 + f1_2) / 2
+        return (f1_1 + f1_2) / 2, [f1_1, f1_2]
 
     def validation_epoch_end(self, outputs):
         matr = sum([output['confusion_matrix'] for output in outputs])
         loss_val = torch.stack([x['loss_val'] for x in outputs]).mean()
-        f1 = self.f1_score(matr)
+        total_f1, [f1_1class, f1_2class] = self.f1_score(matr)
         output = {
             'val_loss': loss_val,
             'log': {
-                'val_loss': loss_val, 
-                'macro_f1': f1
+                'val_loss': loss_val,
+                'macro_f1': total_f1,
+                'f1_1class': f1_1class,
+                'f1_2class': f1_2class
             }
         }
         return output
-        
