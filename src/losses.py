@@ -134,6 +134,3 @@ class SoftmaxLoss(torch.nn.Module):
         loss = self.criterion(scores, targets)
 
         return loss
-
-
-
