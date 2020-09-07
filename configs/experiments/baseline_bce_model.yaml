@@ -13,7 +13,7 @@ model:
 criterion_name: OnlineBCELoss
 
 criterion:
-  margin: 0.3
+  margin: 0.5
 
 optimizer:
   lr: 5e-5
