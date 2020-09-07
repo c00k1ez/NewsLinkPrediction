@@ -19,4 +19,4 @@ optimizer:
   lr: 5e-5
 
 trainer:
-  max_epochs: 2
+  max_epochs: 5
