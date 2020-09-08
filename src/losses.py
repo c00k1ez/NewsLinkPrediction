@@ -7,7 +7,7 @@ class NegariveSampler:
     def __init__(self, margin=None, number_of_neg_samples=1):
         self.margin = margin
         self.number_of_neg_samples = number_of_neg_samples
-        assert number_of_neg_samples == 1 and margin is None or number_of_neg_samples >= 1 and margin is not None
+        assert number_of_neg_samples >= 1
 
     def negative_samples(
             self,
@@ -98,6 +98,7 @@ class OnlineBCELoss(torch.nn.Module):
         self.reduction = reduction
         assert reduction in ['mean', 'sum', 'none']
         self.bce = torch.nn.BCEWithLogitsLoss(reduction=reduction)
+        self.number_of_neg_samples = number_of_neg_samples
 
     def _distance(self, t1, t2):
         return torch.cosine_similarity(t1, t2)
@@ -112,8 +113,7 @@ class OnlineBCELoss(torch.nn.Module):
 
         neg = self.sampler.negative_samples(model_outputs) # shape [batch_size, number_of_neg_samples, embedding_size]
 
-        batch_size, emb_dim = pos.size()
-        # TODO: test it
+        batch_size, number_of_neg_samples, emb_dim = pos.size()
         neg = neg.view(-1, emb_dim)
         pos = pos.view(-1, emb_dim)
         anchor = anchor.view(-1, emb_dim)
