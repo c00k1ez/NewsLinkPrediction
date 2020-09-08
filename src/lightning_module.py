@@ -34,7 +34,7 @@ class LightningModel(pl.LightningModule):
     
     def configure_optimizers(self):
         opt = transformers.AdamW(self.siamese_model.parameters(), **self.hparams['optimizer'])
-        output = ([opt], )
+        output = opt
         if 'scheduler' in self.hparams:
             scheduler = get_linear_schedule_with_warmup(opt, **self.hparams['scheduler'])
             output = ([opt], [scheduler])
