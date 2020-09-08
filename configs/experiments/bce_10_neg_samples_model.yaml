@@ -1,4 +1,4 @@
-experiment_name: baseline_bce_bert
+experiment_name: bce_with_10_neg_samples_bert
 
 backbone_model: BertModel
 freeze_backbone: true
