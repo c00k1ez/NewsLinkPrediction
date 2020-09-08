@@ -16,3 +16,6 @@ criterion:
 
 optimizer:
   lr: 5e-5
+
+scheduler:
+  num_warmup_steps: 200

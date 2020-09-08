@@ -19,8 +19,11 @@ criterion:
 optimizer:
   lr: 5e-5
 
+scheduler:
+  num_warmup_steps: 200
+
 trainer:
-  max_epochs: 2
+  max_epochs: 5
 
 loaders:
   batch_size: 300 # for 16gb Tesla P100

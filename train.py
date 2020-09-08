@@ -39,6 +39,8 @@ if __name__ == "__main__":
         'train_dataloader' : torch.utils.data.DataLoader(train, **config['loaders']),
         'val_dataloaders' : torch.utils.data.DataLoader(test, **config['loaders'])
     }
+    if 'scheduler' in config:
+        config['scheduler'].num_training_steps = len(loaders['train_dataloader']) * config['trainer'].max_epochs
     # -----------------------------------------------------
     # step 4 : init model
     model = LightningModel(config)

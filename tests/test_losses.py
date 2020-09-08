@@ -17,7 +17,7 @@ class TestLosses:
         assert list(neg.shape) == [bs, emb_size]
 
     def test_online_triplet_loss(self):
-        sampler = NegariveSampler()
+        sampler = NegariveSampler
         criterion = OnlineTripletLoss(margin=1, sampler=sampler)
         bs = 5
         emb_size = 20
@@ -53,7 +53,7 @@ class TestLosses:
         assert list(neg.shape) == [bs, emb_size]
 
     def test_softmax_loss(self):
-        criterion = SoftmaxLoss()
+        criterion = SoftmaxLoss(margin=0.5)
         bs = 5
         emb_size = 20
 

@@ -4,6 +4,7 @@ import torch
 import pytorch_lightning as pl
 from pytorch_lightning.metrics.classification import ConfusionMatrix
 import transformers
+from transformers import get_linear_schedule_with_warmup
 import numpy as np
 
 import src.models as models
@@ -32,7 +33,13 @@ class LightningModel(pl.LightningModule):
         self.conf_matrix = ConfusionMatrix()
     
     def configure_optimizers(self):
-        return transformers.AdamW(self.siamese_model.parameters(), **self.hparams['optimizer'])
+        opt = transformers.AdamW(self.siamese_model.parameters(), **self.hparams['optimizer'])
+        output = ([opt], )
+        if 'scheduler' in self.hparams:
+            scheduler = get_linear_schedule_with_warmup(opt, **self.hparams['scheduler'])
+            output = ([opt], [scheduler])
+        return output
+    
 
     def forward(self, batch):
         return self.siamese_model(batch)
