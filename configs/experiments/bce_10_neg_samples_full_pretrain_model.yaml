@@ -28,3 +28,4 @@ loaders:
 
 trainer:
   max_epochs: 5
+  precision: 16
