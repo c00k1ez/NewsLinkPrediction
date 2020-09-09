@@ -27,7 +27,7 @@ datasets:
   news_pad_len: 256
 
 loaders:
-  batch_size: 30
+  batch_size: 40
 
 trainer:
   max_epochs: 5
