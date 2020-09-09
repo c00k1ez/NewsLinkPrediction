@@ -108,20 +108,20 @@ class OnlineBCELoss(torch.nn.Module):
         anchor = model_outputs['anchor'] # shape [batch_size, embedding_size]
         pos = model_outputs['positive'] # shape [batch_size, embedding_size]
 
-        pos = pos.unsqueeze(1).repeat(1, self.number_of_neg_samples, 1)
-        anchor = anchor.unsqueeze(1).repeat(1, self.number_of_neg_samples, 1)
+        #pos = pos.unsqueeze(1).repeat(1, self.number_of_neg_samples, 1)
+        anchor_neg = anchor.unsqueeze(1).repeat(1, self.number_of_neg_samples, 1)
 
         neg = self.sampler.negative_samples(model_outputs) # shape [batch_size, number_of_neg_samples, embedding_size]
 
-        batch_size, number_of_neg_samples, emb_dim = pos.size()
+        batch_size, number_of_neg_samples, emb_dim = anchor_neg.size()
         neg = neg.view(-1, emb_dim)
-        pos = pos.view(-1, emb_dim)
-        anchor = anchor.view(-1, emb_dim)
+        #pos = pos.view(-1, emb_dim)
+        anchor_neg = anchor_neg.view(-1, emb_dim)
 
-        anchor_pos_dist = self._distance(anchor, pos) # shape [batch_size*number_of_neg_samples,]
-        anchor_neg_dist = self._distance(anchor, neg) # shape [batch_size*number_of_neg_samples,]
+        anchor_pos_dist = self._distance(anchor, pos) # shape [batch_size,]
+        anchor_neg_dist = self._distance(anchor_neg, neg) # shape [batch_size*number_of_neg_samples,]
         dists = torch.cat([anchor_pos_dist, anchor_neg_dist]).type_as(pos)
-        labels = torch.FloatTensor([1] * (batch_size*self.number_of_neg_samples) + [0] * (batch_size*self.number_of_neg_samples)).type_as(pos)
+        labels = torch.FloatTensor([1] * (batch_size) + [0] * (batch_size*self.number_of_neg_samples)).type_as(pos)
         return self.bce(dists, labels)
 
 
