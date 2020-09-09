@@ -25,6 +25,7 @@ optimizer:
 
 datasets:
   news_pad_len: 256
+  broadcast_pad_len: 400
 
 loaders:
   batch_size: 30
