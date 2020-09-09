@@ -24,8 +24,9 @@ optimizer:
 #  num_warmup_steps: 200
 
 loaders:
-  batch_size: 50
+  batch_size: 40
 
 trainer:
   max_epochs: 5
   precision: 16
+  accumulate_grad_batches: 3
