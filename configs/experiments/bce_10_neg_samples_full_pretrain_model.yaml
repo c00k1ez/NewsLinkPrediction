@@ -1,0 +1,30 @@
+experiment_name: bce_10_neg_samples_full_pretrain_model
+
+backbone_model: BertModel
+freeze_backbone: false
+main_model: BaselineSiameseNetwork
+model_output_prob: false
+cos_margin: 0.7
+
+model:
+  encoder_hidden: 768
+  output_dim: 256
+
+criterion_name: OnlineBCELoss
+
+criterion:
+  margin: 0.5
+  number_of_neg_samples: 10
+
+optimizer:
+  lr: 5e-5
+#  weight_decay: 1e-4
+
+#scheduler:
+#  num_warmup_steps: 200
+
+loaders:
+  batch_size: 150
+
+trainer:
+  max_epochs: 5
