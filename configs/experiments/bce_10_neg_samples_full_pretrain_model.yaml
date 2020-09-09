@@ -23,6 +23,9 @@ optimizer:
 #scheduler:
 #  num_warmup_steps: 200
 
+datasets:
+  news_pad_len: 256
+
 loaders:
   batch_size: 30
 
