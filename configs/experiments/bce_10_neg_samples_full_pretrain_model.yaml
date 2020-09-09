@@ -24,7 +24,7 @@ optimizer:
 #  num_warmup_steps: 200
 
 loaders:
-  batch_size: 100
+  batch_size: 70
 
 trainer:
   max_epochs: 5
