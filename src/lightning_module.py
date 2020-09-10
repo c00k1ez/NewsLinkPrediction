@@ -53,15 +53,14 @@ class LightningModel(pl.LightningModule):
     def validation_step(self, batch, batch_nb):
         outputs = self.forward(batch)
         loss = self.criterion(outputs)
-        labels = batch['label'].cpu()
+        labels = batch['label']
         ret = {'loss_val': loss}
         if self.hparams.model_output_prob is False:
             # shape : [batch_size, ]
             sim = torch.nn.functional.cosine_similarity(outputs['anchor'], outputs['positive'])
             sim[sim >= self.hparams.cos_margin] = 1
             sim[sim < self.hparams.cos_margin] = 0
-            sim = sim.cpu()
-            sim = sim.type(torch.LongTensor)
+            sim = sim.type_as(labels)
             matr = self.conf_matrix(sim, labels)
             ret['confusion_matrix'] = matr
         return ret
