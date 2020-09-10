@@ -15,7 +15,7 @@ import os
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--experiment_config', type=str, default='baseline_bce_model.yaml')
+    parser.add_argument('--experiment_config', type=str, default='softmax_loss_full_train_model.yaml')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--use_comet', type=bool, default=False)
     parser.add_argument('--gpus', type=int, default='0')

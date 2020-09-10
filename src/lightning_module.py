@@ -78,7 +78,7 @@ class LightningModel(pl.LightningModule):
         matr = sum([output['confusion_matrix'] for output in outputs])
         loss_val = torch.stack([x['loss_val'] for x in outputs]).mean()
         total_f1, [f1_1class, f1_2class] = self.f1_score(matr)
-        logging.info('log confusion matrix at {} step: {} \n'.format(self.global_step, np.matrix(matr.tolist())))
+        logging.info('log confusion matrix at {} step: \n {}'.format(self.global_step, np.matrix(matr.tolist())))
         #print('log confusion matrix at {} step: {} \n'.format(self.global_step, np.matrix(matr.tolist())))
         output = {
             'val_loss': loss_val,
