@@ -18,10 +18,10 @@ criterion:
 
 optimizer:
   lr: 5e-5
-#  weight_decay: 1e-4
+  weight_decay: 1e-4
 
-#scheduler:
-#  num_warmup_steps: 200
+scheduler:
+  num_warmup_steps: 500
 
 datasets:
   news_pad_len: 256
