@@ -23,7 +23,7 @@ optimizer:
 #  num_warmup_steps: 200
 
 trainer:
-  max_epochs: 5
+  max_epochs: 3
 
 loaders:
   batch_size: 300 # for 16gb Tesla P100

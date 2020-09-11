@@ -31,6 +31,6 @@ loaders:
   batch_size: 30
 
 trainer:
-  max_epochs: 5
+  max_epochs: 3
   precision: 16
   accumulate_grad_batches: 3

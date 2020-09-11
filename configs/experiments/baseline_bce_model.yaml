@@ -24,4 +24,4 @@ optimizer:
 
 
 trainer:
-  max_epochs: 5
+  max_epochs: 3
