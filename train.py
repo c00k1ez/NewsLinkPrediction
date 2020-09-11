@@ -20,6 +20,7 @@ if __name__ == "__main__":
     parser.add_argument('--use_comet', type=bool, default=False)
     parser.add_argument('--gpus', type=int, default='0')
     parser.add_argument('--distributed_backend', type=str, default=None, choices=[None, 'ddp', 'ddp_cpu', 'dp'])
+    parser.add_argument('--fast_dev_run', type=bool, default=False)
 
     args = parser.parse_args()
     pl.seed_everything(args.seed)
@@ -61,7 +62,8 @@ if __name__ == "__main__":
         **config['trainer'],
         logger=logger,
         gpus=args.gpus,
-        distributed_backend=args.distributed_backend
+        distributed_backend=args.distributed_backend,
+        fast_dev_run=args.fast_dev_run
     )
     # -----------------------------------------------------
     # step 7 : train model
