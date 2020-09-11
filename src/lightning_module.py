@@ -30,7 +30,7 @@ class LightningModel(pl.LightningModule):
         else:
             self.criterion = criterion_class()
 
-        self.conf_matrix = ConfusionMatrix()
+        self.conf_matrix = ConfusionMatrix(num_classes=2)
     
     def configure_optimizers(self):
         opt = transformers.AdamW(self.siamese_model.parameters(), **self.hparams['optimizer'])
