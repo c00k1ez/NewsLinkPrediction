@@ -65,28 +65,31 @@ class LightningModel(pl.LightningModule):
             ret['confusion_matrix'] = matr
         return ret
 
-    def f1_score(self, matr: torch.Tensor):
-        pr_1 = matr[0, 0] / (matr[0, 0] + matr[0, 1])
-        rec_1 = matr[0, 0] / (matr[0, 0] + matr[1, 0])
-        pr_2 = matr[1, 1] / (matr[1, 1] + matr[1, 0])
-        rec_2 = matr[1, 1] / (matr[1, 1] + matr[0, 1])
-        f1_1 = 2 * pr_1 * rec_1 / (pr_1 + rec_1)
-        f1_2 = 2 * pr_2 * rec_2 / (pr_2 + rec_2)
-        return (f1_1 + f1_2) / 2, [f1_1, f1_2]
+    def f1_score(self, matr: torch.Tensor, average='weighted'):
+        assert average in ['weighted',]
+        tn, fp, fn, tp = matr[0, 0], matr[0, 1], matr[1, 0], matr[1, 1]
+        precision_0, recall_0 = tn / (tn + fn), tn / (tn + fp)
+        precision_1, recall_1 = tp / (tp + fp), tp / (tp + fn)
+        f1_0 = 2 * precision_0 * recall_0 / (precision_0 + recall_0)
+        f1_1 = 2 * precision_1 * recall_1 / (precision_1 + recall_1)
+        weight_0 = (tn + fp) / (tn + fp + fn + tp)
+        weight_1 = (tp + fn) / (tn + fp + fn + tp)
+        total_f1 = weight_0 * f1_0 + weight_1 * f1_1
+        return total_f1, [f1_0, f1_1]
 
     def validation_epoch_end(self, outputs):
         matr = sum([output['confusion_matrix'] for output in outputs])
         loss_val = torch.stack([x['loss_val'] for x in outputs]).mean()
-        total_f1, [f1_1class, f1_2class] = self.f1_score(matr)
+        total_f1, [f1_0, f1_1] = self.f1_score(matr)
         logging.info('log confusion matrix at {} step: \n {}'.format(self.global_step, np.matrix(matr.tolist())))
         #print('log confusion matrix at {} step: {} \n'.format(self.global_step, np.matrix(matr.tolist())))
         output = {
             'val_loss': loss_val,
             'log': {
                 'val_loss': loss_val,
-                'macro_f1': total_f1,
-                'f1_1class': f1_1class,
-                'f1_2class': f1_2class
+                'weighted_f1': total_f1,
+                'f1_0': f1_0,
+                'f1_1': f1_1
             }
         }
         return output

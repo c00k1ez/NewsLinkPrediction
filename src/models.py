@@ -21,16 +21,17 @@ class MaskedAveragePooling(torch.nn.Module):
         output_tensor = output_tensor / current_length
         return output_tensor
 
-        
 
 class BaselineSiameseNetwork(torch.nn.Module):
-    def __init__(self, 
-                encoder: transformers.PreTrainedModel, 
-                encoder_hidden: int,
-                output_dim : int,
-                dropout : int = 0.2):
+    def __init__(
+            self,
+            encoder: transformers.PreTrainedModel,
+            encoder_hidden: int,
+            output_dim: int,
+            dropout: int = 0.2
+        ):
         super(BaselineSiameseNetwork, self).__init__()
-        self.encoder = encoder 
+        self.encoder = encoder
         self.encoder_hidden = encoder_hidden
         self.output_dim = output_dim
         self.pool = MaskedAveragePooling()

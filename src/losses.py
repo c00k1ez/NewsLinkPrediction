@@ -38,7 +38,6 @@ class NegariveSampler:
         return neg
 
 
-
 class OnlineTripletLoss(torch.nn.Module):
     def __init__(
             self,
