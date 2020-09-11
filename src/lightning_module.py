@@ -62,6 +62,7 @@ class LightningModel(pl.LightningModule):
             sim[sim < self.hparams.cos_margin] = 0
             sim = sim.type_as(labels)
             matr = self.conf_matrix(sim, labels)
+            assert list(matr.shape) == [2, 2]
             ret['confusion_matrix'] = matr
         return ret
 
