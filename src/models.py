@@ -58,4 +58,56 @@ class BaselineSiameseNetwork(torch.nn.Module):
         }
 
 
+class SiameseNetwork(torch.nn.Module):
+    def __init__(
+            self,
+            encoder: transformers.PreTrainedModel,
+            encoder_hidden: int,
+            output_dim: int,
+            n_chunks: int = 4,
+            chunk_size: int = 512,
+            dropout: int = 0.2
+        ):
+        super(SiameseNetwork, self).__init__()
+        self.encoder = encoder
+        self.encoder_hidden = encoder_hidden
+        self.n_chunks = n_chunks
+        self.chunk_size = chunk_size
+        self.output_dim = output_dim
+        self.pool = MaskedAveragePooling()
+        self.prehead_dropout = torch.nn.Dropout(dropout)
+        self.broadcast_head = torch.nn.Linear(encoder_hidden * n_chunks, output_dim)
+        self.news_head = torch.nn.Linear(encoder_hidden, output_dim)
+
+    def forward(self, batch):
+        broadcast = batch['broadcast']
+        broadcast_mask = batch['broadcast_mask']
+        news = batch['news']
+        news_mask = batch['news_mask']
+
+        news = self.encoder(news, attention_mask=news_mask)[0] # [batch_size, news_seq_len, encoder_hidden]
+        news = self.prehead_dropout(self.pool(news, news_mask)) # [batch_size, encoder_hidden]
+
+        assert self.chunk_size * self.n_chunks == broadcast.shape[1]
+        broadcast = torch.split(broadcast, self.chunk_size, dim=1)
+        broadcast_mask = torch.split(broadcast_mask, self.chunk_size, dim=1)
+
+        encoded_broadcast = []
+        for br, attn_mask in zip(broadcast, broadcast_mask):
+            encoded_broadcast.append(self.encoder(br, attention_mask=attn_mask)[0])
+        # encoded_broadcast - list of 4 tensors with shape [batch_size, chunk_size, 768]
+        pooled = []
+        for tensor in encoded_broadcast:
+            pooled.append(self.pool(tensor))
+        # pooled - list of 4 tensors with shape [batch_size, 768]
+        pooled = torch.cat(pooled, dim=1) # shape [batch_size, 3072]
+        pooled = self.prehead_dropout(pooled)
+
+        pooled = self.broadcast_head(pooled)
+        news = self.news_head(news)
         
+        return {
+            'anchor': pooled,
+            'positive': news
+        }
+
