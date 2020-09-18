@@ -44,9 +44,11 @@ class BaselineSiameseNetwork(torch.nn.Module):
         broadcast_mask = batch['broadcast_mask']
         news = batch['news']
         news_mask = batch['news_mask']
+
         broadcast = self.encoder(broadcast, attention_mask=broadcast_mask)[0] # [batch_size, br_seq_len, encoder_hidden]
-        news = self.encoder(news, attention_mask=news_mask)[0] # [batch_size, news_seq_len, encoder_hidden]
         broadcast = self.prehead_dropout(self.pool(broadcast, broadcast_mask)) # [batch_size, encoder_hidden]
+        
+        news = self.encoder(news, attention_mask=news_mask)[0] # [batch_size, news_seq_len, encoder_hidden]
         news = self.prehead_dropout(self.pool(news, news_mask)) # [batch_size, encoder_hidden]
 
         broadcast = self.broadcast_head(broadcast)
