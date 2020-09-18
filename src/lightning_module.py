@@ -46,6 +46,7 @@ class LightningModel(pl.LightningModule):
 
     def training_step(self, batch, batch_nb):
         outputs = self.forward(batch)
+        print(batch['broadcast'].shape)
         loss = self.criterion(outputs)
         logs = {'train_loss': loss}
         return {'loss': loss, 'log': logs}
