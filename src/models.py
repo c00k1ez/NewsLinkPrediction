@@ -95,9 +95,12 @@ class SiameseNetwork(torch.nn.Module):
         for br, attn_mask in zip(broadcast, broadcast_mask):
             encoded_broadcast.append(self.encoder(br, attention_mask=attn_mask)[0])
         # encoded_broadcast - list of 4 tensors with shape [batch_size, chunk_size, 768]
+        assert len(encoded_broadcast) == 4
         pooled = []
         for tensor in encoded_broadcast:
             pooled.append(self.pool(tensor))
+
+        assert len(pooled) == 4
         # pooled - list of 4 tensors with shape [batch_size, 768]
         pooled = torch.cat(pooled, dim=1) # shape [batch_size, 3072]
         pooled = self.prehead_dropout(pooled)
