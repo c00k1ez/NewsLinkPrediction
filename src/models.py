@@ -41,6 +41,7 @@ class BaselineSiameseNetwork(torch.nn.Module):
 
     def forward(self, batch):
         broadcast = batch['broadcast']
+        print(broadcast.shape)
         broadcast_mask = batch['broadcast_mask']
         news = batch['news']
         news_mask = batch['news_mask']
