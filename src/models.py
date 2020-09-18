@@ -87,9 +87,6 @@ class SiameseNetwork(torch.nn.Module):
         news = batch['news']
         news_mask = batch['news_mask']
 
-        news = self.encoder(news, attention_mask=news_mask)[0] # [batch_size, news_seq_len, encoder_hidden]
-        news = self.prehead_dropout(self.pool(news, news_mask)) # [batch_size, encoder_hidden]
-
         assert self.chunk_size * self.n_chunks == broadcast.shape[1]
         broadcast = torch.split(broadcast, self.chunk_size, dim=1)
         broadcast_mask = torch.split(broadcast_mask, self.chunk_size, dim=1)
@@ -104,6 +101,9 @@ class SiameseNetwork(torch.nn.Module):
         # pooled - list of 4 tensors with shape [batch_size, 768]
         pooled = torch.cat(pooled, dim=1) # shape [batch_size, 3072]
         pooled = self.prehead_dropout(pooled)
+
+        news = self.encoder(news, attention_mask=news_mask)[0] # [batch_size, news_seq_len, encoder_hidden]
+        news = self.prehead_dropout(self.pool(news, news_mask)) # [batch_size, encoder_hidden]
 
         pooled = self.broadcast_head(pooled)
         news = self.news_head(news)
