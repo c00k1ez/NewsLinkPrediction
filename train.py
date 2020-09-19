@@ -18,7 +18,7 @@ if __name__ == "__main__":
     parser.add_argument('--experiment_config', type=str, default='baseline_bce_model.yaml')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--use_comet', type=bool, default=False)
-    parser.add_argument('--gpus', type=int, default='0')
+    parser.add_argument('--gpu_id', type=int, default=None)
     parser.add_argument('--distributed_backend', type=str, default=None, choices=[None, 'ddp', 'ddp_cpu', 'dp'])
     parser.add_argument('--fast_dev_run', type=bool, default=False)
 
@@ -58,10 +58,13 @@ if __name__ == "__main__":
     
     # -----------------------------------------------------
     # step 6 : init Trainer
+    gpus = '0'
+    if args.gpu_id is not None:
+        gpus = [args.gpu_id,]
     trainer = pl.Trainer(
         **config['trainer'],
         logger=logger,
-        gpus=args.gpus,
+        gpus=gpus,
         distributed_backend=args.distributed_backend,
         fast_dev_run=args.fast_dev_run
     )
