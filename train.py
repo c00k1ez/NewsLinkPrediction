@@ -14,6 +14,9 @@ import transformers
 
 import os
 
+import warnings
+warnings.filterwarnings("ignore")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--experiment_config', type=str, default='baseline_bce_model.yaml')
