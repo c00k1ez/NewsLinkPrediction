@@ -14,8 +14,10 @@ import transformers
 
 import os
 
-import warnings
-warnings.filterwarnings("ignore")
+import logging
+
+logging.getLogger("transformers").setLevel(logging.INFO)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
