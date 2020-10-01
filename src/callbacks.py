@@ -10,11 +10,11 @@ class UnfreezingCallback(pl.Callback):
         self.unfreeze_only_k_layers = unfreeze_only_k_layers
 
     def freeze_everything(self, pl_module):
-        for param in pl_module.model.parameters():
+        for param in pl_module.siamese_model.parameters():
             param.requires_grad = False
     
     def unfreeze_layer(self, pl_module, layer_id):
-        attr = getattr(pl_module.model, self.name)
+        attr = getattr(pl_module.siamese_model, self.name)
         if hasattr(attr, 'transformer'):
             layer_attr = attr.transformer
         if hasattr(attr, 'encoder'):
@@ -27,7 +27,7 @@ class UnfreezingCallback(pl.Callback):
             param.requires_grad = True
     
     def on_batch_start(self, trainer, pl_module):
-        attr = getattr(pl_module.model, self.name)
+        attr = getattr(pl_module.siamese_model, self.name)
         if hasattr(attr, 'transformer'):
             layer_attr = attr.transformer
         if hasattr(attr, 'encoder'):
