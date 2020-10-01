@@ -16,7 +16,7 @@ import os
 
 import logging
 
-logging.getLogger("transformers").setLevel(logging.INFO)
+logging.getLogger("transformers").setLevel(logging.CRITICAL)
 
 
 if __name__ == "__main__":
