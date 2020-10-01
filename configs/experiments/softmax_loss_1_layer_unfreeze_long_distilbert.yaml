@@ -1,0 +1,41 @@
+experiment_name: softmax_loss_1_layer_unfreeze_long_distilbert
+
+model_name: 'distilbert-base-multilingual-cased'
+
+backbone_model: DistilBertModel
+freeze_backbone: true
+main_model: SiameseNetwork
+model_output_prob: false
+cos_margin: 0.6
+
+model:
+  encoder_hidden: 768
+  output_dim: 256
+  n_chunks: 4
+  chunk_size: 512
+
+criterion_name: SoftmaxLoss
+
+criterion:
+  norm_vectors: true
+
+optimizer:
+  lr: 5e-5
+#  weight_decay: 1e-4
+
+#scheduler:
+#  num_warmup_steps: 200
+
+datasets:
+  news_pad_len: 512
+  broadcast_pad_len: 2048
+
+loaders:
+  batch_size: 350 # for 16gb Tesla P100
+
+trainer:
+  max_epochs: 6
+
+callbacks:
+  unfreeze_only_k_layers: 2
+  unfreeze_every_k_steps: 500

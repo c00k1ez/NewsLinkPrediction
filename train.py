@@ -7,6 +7,7 @@ import src.models as models
 from src.utils import get_class_by_name, get_config, seed_all, init_tokenizer, read_dataset
 from src.dataset import PairsDataset
 from src.lightning_module import LightningModel
+from src.callbacks import UnfreezingCallback
 
 import pytorch_lightning as pl
 import transformers
@@ -57,7 +58,12 @@ if __name__ == "__main__":
         logger = [logger, comet_logger]
     
     # -----------------------------------------------------
-    # step 6 : init Trainer
+    # step 6 : init callbacks
+    callbacks = None
+    if 'callbacks' in config:
+        callbacks = [UnfreezingCallback(**config['callbacks']),]
+    # -----------------------------------------------------
+    # step 7 : init Trainer
     gpus = '0'
     if args.gpu_id is not None:
         gpus = [args.gpu_id,]
@@ -66,8 +72,9 @@ if __name__ == "__main__":
         logger=logger,
         gpus=gpus,
         distributed_backend=args.distributed_backend,
-        fast_dev_run=args.fast_dev_run
+        fast_dev_run=args.fast_dev_run,
+        callbacks=callbacks
     )
     # -----------------------------------------------------
-    # step 7 : train model
+    # step 8 : train model
     trainer.fit(model, **loaders)
