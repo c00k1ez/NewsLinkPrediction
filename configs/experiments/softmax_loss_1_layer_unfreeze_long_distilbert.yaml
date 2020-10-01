@@ -31,7 +31,7 @@ datasets:
   broadcast_pad_len: 2048
 
 loaders:
-  batch_size: 350 # for 16gb Tesla P100
+  batch_size: 200 #350 # for 16gb Tesla P100
 
 trainer:
   max_epochs: 6
