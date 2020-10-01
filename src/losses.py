@@ -128,7 +128,7 @@ class SoftmaxLoss(torch.nn.Module):
     '''
     Read more about this loss here https://arxiv.org/abs/1902.08564
     '''
-    def __init__(self, margin=None, norm_vectors=True, reduction='mean'):
+    def __init__(self, margin=None, norm_vectors=False, reduction='mean'):
         super(SoftmaxLoss, self).__init__()
         self.margin = margin
         self.reduction = reduction
