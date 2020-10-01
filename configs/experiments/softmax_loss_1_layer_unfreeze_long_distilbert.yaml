@@ -16,6 +16,9 @@ model:
 
 criterion_name: SoftmaxLoss
 
+criterion:
+  norm_vectors: false
+
 optimizer:
   lr: 5e-5
 #  weight_decay: 1e-4
