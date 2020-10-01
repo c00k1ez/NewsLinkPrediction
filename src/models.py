@@ -13,9 +13,9 @@ class MaskedAveragePooling(torch.nn.Module):
             mask_repeated = mask.unsqueeze(-1).repeat([1, 1, output_tensor.shape[2]])
             mask_repeated = mask_repeated.type_as(output_tensor)
         output_tensor = output_tensor * mask_repeated
-        dim_size = output_tensor.shape[dim]
-        output_tensor = output_tensor.mean(dim=dim)
-        output_tensor = output_tensor * dim_size
+        #dim_size = output_tensor.shape[dim]
+        output_tensor = output_tensor.sum(dim=dim)
+        output_tensor[output_tensor.isnan()] = 0.
         current_length = mask.sum(dim=-1).unsqueeze(-1).repeat([1, output_tensor.shape[-1]])
         current_length = current_length.type_as(mask)
         output_tensor = output_tensor / current_length

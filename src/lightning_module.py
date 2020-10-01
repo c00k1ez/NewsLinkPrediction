@@ -47,6 +47,7 @@ class LightningModel(pl.LightningModule):
     def training_step(self, batch, batch_nb):
         outputs = self.forward(batch)
         loss = self.criterion(outputs)
+        assert loss.detach().cpu().isnan() != True
         logs = {'train_loss': loss}
         return {'loss': loss, 'log': logs}
 
