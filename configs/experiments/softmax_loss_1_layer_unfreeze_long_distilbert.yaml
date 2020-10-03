@@ -1,8 +1,6 @@
 experiment_name: softmax_loss_1_layer_unfreeze_long_distilbert
 
-model_name: 'distilbert-base-multilingual-cased'
-
-backbone_model: DistilBertModel
+backbone_model: BertModel
 freeze_backbone: true
 main_model: SiameseNetwork
 model_output_prob: false
