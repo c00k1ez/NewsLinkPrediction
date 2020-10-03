@@ -36,4 +36,4 @@ trainer:
 
 callbacks:
   unfreeze_only_k_layers: 2
-  unfreeze_every_k_steps: 700
+  unfreeze_every_k_steps: 1000
