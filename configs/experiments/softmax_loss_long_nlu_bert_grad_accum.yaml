@@ -5,7 +5,6 @@ model_name: 'DeepPavlov/rubert-base-cased-sentence'
 backbone_model: BertModel
 freeze_backbone: true
 main_model: SiameseNetwork
-model_output_prob: false
 cos_margin: 0.7
 
 model:
@@ -15,9 +14,6 @@ model:
   chunk_size: 512
 
 criterion_name: SoftmaxLoss
-
-criterion:
-  norm_vectors: false
 
 optimizer:
   lr: 5e-5

@@ -56,15 +56,14 @@ class LightningModel(pl.LightningModule):
         loss = self.criterion(outputs)
         labels = batch['label']
         ret = {'loss_val': loss}
-        if self.hparams.model_output_prob is False:
-            # shape : [batch_size, ]
-            sim = torch.nn.functional.cosine_similarity(outputs['anchor'], outputs['positive'])
-            sim[sim >= self.hparams.cos_margin] = 1
-            sim[sim < self.hparams.cos_margin] = 0
-            sim = sim.type_as(labels)
-            matr = self.conf_matrix(sim, labels)
-            assert list(matr.shape) == [2, 2]
-            ret['confusion_matrix'] = matr
+        # shape : [batch_size, ]
+        sim = torch.nn.functional.cosine_similarity(outputs['anchor'], outputs['positive'])
+        sim[sim >= self.hparams.cos_margin] = 1
+        sim[sim < self.hparams.cos_margin] = 0
+        sim = sim.type_as(labels)
+        matr = self.conf_matrix(sim, labels)
+        assert list(matr.shape) == [2, 2]
+        ret['confusion_matrix'] = matr
         return ret
 
     def f1_score(self, matr: torch.Tensor, average='weighted'):
