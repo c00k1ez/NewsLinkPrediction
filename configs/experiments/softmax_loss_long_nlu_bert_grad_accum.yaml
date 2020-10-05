@@ -1,10 +1,12 @@
-experiment_name: softmax_loss_1_layer_unfreeze_long_bert
+experiment_name: softmax_loss_long_nlu_bert_grad_accum
+
+model_name: 'DeepPavlov/rubert-base-cased-sentence'
 
 backbone_model: BertModel
 freeze_backbone: true
 main_model: SiameseNetwork
 model_output_prob: false
-cos_margin: 0.6
+cos_margin: 0.7
 
 model:
   encoder_hidden: 768
@@ -29,11 +31,8 @@ datasets:
   broadcast_pad_len: 2048
 
 loaders:
-  batch_size: 20 #350 # for 16gb Tesla P100
+  batch_size: 350 # for 16gb Tesla P100
 
 trainer:
   max_epochs: 6
-
-callbacks:
-  unfreeze_only_k_layers: 2
-  unfreeze_every_k_steps: 1000
+  accumulate_grad_batches: 3
