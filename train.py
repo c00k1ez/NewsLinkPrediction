@@ -25,10 +25,14 @@ if __name__ == "__main__":
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--use_comet', type=bool, default=False)
     parser.add_argument('--gpu_id', type=int, default=None)
+    parser.add_argument('--gpus', type=int, default=None)
     parser.add_argument('--distributed_backend', type=str, default=None, choices=[None, 'ddp', 'ddp_cpu', 'dp'])
     parser.add_argument('--fast_dev_run', type=bool, default=False)
 
     args = parser.parse_args()
+
+    assert args.gpu_id is None or args.gpus is None
+
     pl.seed_everything(args.seed)
     # -----------------------------------------------------
     # step 1 : init config
@@ -72,6 +76,8 @@ if __name__ == "__main__":
     gpus = '0'
     if args.gpu_id is not None:
         gpus = [args.gpu_id,]
+    if args.gpus is not None:
+        gpus = args.gpus
     trainer = pl.Trainer(
         **config['trainer'],
         logger=logger,
