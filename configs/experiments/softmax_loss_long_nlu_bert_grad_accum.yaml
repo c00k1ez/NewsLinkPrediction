@@ -30,5 +30,5 @@ loaders:
   batch_size: 350 # for 16gb Tesla P100
 
 trainer:
-  max_epochs: 6
+  max_epochs: 3
   accumulate_grad_batches: 2
