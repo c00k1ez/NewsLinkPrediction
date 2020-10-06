@@ -5,7 +5,7 @@ model_name: 'DeepPavlov/rubert-base-cased-sentence'
 backbone_model: BertModel
 freeze_backbone: true
 main_model: SiameseNetwork
-cos_margin: 0.5
+cos_margin: 0.3
 
 model:
   encoder_hidden: 768
