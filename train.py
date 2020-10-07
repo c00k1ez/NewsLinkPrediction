@@ -78,6 +78,9 @@ if __name__ == "__main__":
         gpus = [args.gpu_id,]
     if args.gpus is not None:
         gpus = args.gpus
+    
+    config.trainer.default_root_dir = config.trainer.default_root_dir + '/' + config.experiment_name
+
     trainer = pl.Trainer(
         **config['trainer'],
         logger=logger,
@@ -90,4 +93,4 @@ if __name__ == "__main__":
     # step 8 : train model
     trainer.fit(model, **loaders)
 
-    trainer.save_checkpoint(config.trainer.default_root_dir + '/{}/{}_latest.chpt'.format(config.experiment_name, config.experiment_name))
+    trainer.save_checkpoint(config.trainer.default_root_dir + '/{}_latest.chpt'.format(config.experiment_name))
