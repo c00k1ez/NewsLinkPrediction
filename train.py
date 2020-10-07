@@ -79,7 +79,8 @@ if __name__ == "__main__":
     if args.gpus is not None:
         gpus = args.gpus
     
-    config.trainer.default_root_dir = config.trainer.default_root_dir + '/' + config.experiment_name
+    if default_root_dir in config['trainer']:
+        config.trainer.default_root_dir = config.trainer.default_root_dir + '/' + config.experiment_name
 
     trainer = pl.Trainer(
         **config['trainer'],
