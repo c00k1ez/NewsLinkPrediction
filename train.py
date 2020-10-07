@@ -90,4 +90,4 @@ if __name__ == "__main__":
     # step 8 : train model
     trainer.fit(model, **loaders)
 
-    trainer.save_checkpoint(config.trainer.default_root_dir + '/{}_latest.chpt'.format(config.experiment_nameexperiment_name))
+    trainer.save_checkpoint(config.trainer.default_root_dir + '/{}_latest.chpt'.format(config.experiment_name))
