@@ -79,7 +79,7 @@ if __name__ == "__main__":
     if args.gpus is not None:
         gpus = args.gpus
     
-    if default_root_dir in config['trainer']:
+    if config.trainer.default_root_dir is not None:
         config.trainer.default_root_dir = config.trainer.default_root_dir + '/' + config.experiment_name
 
     trainer = pl.Trainer(
