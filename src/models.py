@@ -102,7 +102,7 @@ class SiameseNetwork(torch.nn.Module):
 
         assert len(pooled) == 4
         # pooled - list of 4 tensors with shape [batch_size, 768]
-        pooled = torch.cat(pooled, dim=1) # shape [batch_size, 3072]
+        pooled = torch.nn.functional.relu(torch.cat(pooled, dim=1)) # shape [batch_size, 3072]
         pooled = self.prehead_dropout(pooled)
 
         news = self.encoder(news, attention_mask=news_mask)[0] # [batch_size, news_seq_len, encoder_hidden]
