@@ -10,6 +10,8 @@ import numpy as np
 import src.models as models
 import src.losses as losses
 from src.utils import get_class_by_name
+from src.metrics import F1_score, Recall_at_k
+
 
 class LightningModel(pl.LightningModule):
     def __init__(self, hparams):
@@ -31,6 +33,10 @@ class LightningModel(pl.LightningModule):
             self.criterion = criterion_class()
 
         self.conf_matrix = ConfusionMatrix(num_classes=2)
+        self.f1_score = F1_score()
+        self.recall_at_1 = Recall_at_k(k=1)
+        self.recall_at_3 = Recall_at_k(k=3)
+        self.recall_at_5 = Recall_at_k(k=5)
     
     def configure_optimizers(self):
         opt = transformers.AdamW(self.siamese_model.parameters(), **self.hparams['optimizer'])
@@ -61,27 +67,25 @@ class LightningModel(pl.LightningModule):
         sim[sim >= self.hparams.cos_margin] = 1
         sim[sim < self.hparams.cos_margin] = 0
         sim = sim.type_as(labels)
+        # compute confusion matrix
         matr = self.conf_matrix(sim, labels)
         assert list(matr.shape) == [2, 2]
+        # compute recalls per batch
+        self.recall_at_1(batch)
+        self.recall_at_3(batch)
+        self.recall_at_5(batch)
         ret['confusion_matrix'] = matr
         return ret
-
-    def f1_score(self, matr: torch.Tensor, average='weighted'):
-        assert average in ['weighted',]
-        tn, fp, fn, tp = matr[0, 0], matr[0, 1], matr[1, 0], matr[1, 1]
-        precision_0, recall_0 = tn / (tn + fn), tn / (tn + fp)
-        precision_1, recall_1 = tp / (tp + fp), tp / (tp + fn)
-        f1_0 = 2 * precision_0 * recall_0 / (precision_0 + recall_0)
-        f1_1 = 2 * precision_1 * recall_1 / (precision_1 + recall_1)
-        weight_0 = (tn + fp) / (tn + fp + fn + tp)
-        weight_1 = (tp + fn) / (tn + fp + fn + tp)
-        total_f1 = weight_0 * f1_0 + weight_1 * f1_1
-        return total_f1, [f1_0, f1_1]
 
     def validation_epoch_end(self, outputs):
         matr = sum([output['confusion_matrix'] for output in outputs])
         loss_val = torch.stack([x['loss_val'] for x in outputs]).mean()
+        # compute F1 score
         total_f1, [f1_0, f1_1] = self.f1_score(matr)
+        # compute recall@k scores
+        recall_at_1 = self.recall_at_1.compute_metric()
+        recall_at_3 = self.recall_at_3.compute_metric()
+        recall_at_5 = self.recall_at_5.compute_metric()
         logging.info('log confusion matrix at {} step: \n {}'.format(self.global_step, np.matrix(matr.tolist())))
         #print('log confusion matrix at {} step: {} \n'.format(self.global_step, np.matrix(matr.tolist())))
         output = {
@@ -90,7 +94,10 @@ class LightningModel(pl.LightningModule):
                 'val_loss': loss_val,
                 'weighted_f1': total_f1,
                 'f1_0': f1_0,
-                'f1_1': f1_1
+                'f1_1': f1_1,
+                'recall@1': recall_at_1,
+                'recall@3': recall_at_3,
+                'recall@5': recall_at_5
             }
         }
         return output

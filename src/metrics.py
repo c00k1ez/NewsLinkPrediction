@@ -27,17 +27,17 @@ class F1_score:
 
 
 class Recall_at_k:
-    def __init__(self, k=1):
+    def __init__(self, k=1, selected_positives=10):
         assert k in [1, 3, 5]
         self.k = k
-        self.selected_positives = 10
+        self.selected_positives = selected_positives
         self.tp = []
         self.fn = []
 
     '''
     batch = {'anchor': [batch_size, output_dim], 'positive': [batch_size, output_dim]}
     '''
-    def __call__(self, batch: Dict[str: torch.Tensor]):
+    def __call__(self, batch: Dict[str, torch.Tensor]):
         batch_size, output_dim = batch['anchor'].shape
         assert batch['anchor'].shape == batch['positive'].shape
         assert batch_size-1 > self.selected_positives
@@ -57,13 +57,13 @@ class Recall_at_k:
         # permute distance tensor
         dist = dist.view(-1)[idx].view(batch_size, batch_size - 1)
         # select 9 random positives for each anchor, shape [batch_size, 9]
-        dist = dist[:, self.selected_positives - 1]
+        dist = dist[:, :self.selected_positives - 1]
         # shape [batch_size, 10]
         # at each row, first element is ground truth distance
         dist = torch.cat([ground_truth, dist], dim=1)
         # get probabilities
         dist = torch.softmax(dist, dim=-1)
-        topk_inds = dist.topk(self.k, dim=-1)
+        topk_inds = dist.topk(self.k, dim=-1)[1]
         # true positive is count of non zero elements at topk_inds
         # false negative = batch_size - non zero
         tp = topk_inds[topk_inds == 0].shape[0]
