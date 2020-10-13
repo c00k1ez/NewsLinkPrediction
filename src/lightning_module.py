@@ -71,9 +71,9 @@ class LightningModel(pl.LightningModule):
         matr = self.conf_matrix(sim, labels)
         assert list(matr.shape) == [2, 2]
         # compute recalls per batch
-        self.recall_at_1(batch)
-        self.recall_at_3(batch)
-        self.recall_at_5(batch)
+        self.recall_at_1(outputs)
+        self.recall_at_3(outputs)
+        self.recall_at_5(outputs)
         ret['confusion_matrix'] = matr
         return ret
 
