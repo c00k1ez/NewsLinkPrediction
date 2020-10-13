@@ -1,7 +1,7 @@
 torch>=1.5
-pytorch-lightning>=0.8.4
-omegaconf
+pytorch-lightning==0.9.1rc4
+omegaconf>=2.0.2
 youtokentome==1.0.6
-comet_ml
-pytest
-transformers>=3.0.0
+comet_ml>=3.2.4
+pytest>=6.1.1
+transformers>=3.3.1
