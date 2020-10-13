@@ -4,7 +4,7 @@ backbone_model: BertModel
 freeze_backbone: true
 main_model: BaselineSiameseNetwork
 model_output_prob: false
-cos_margin: 0.3
+cos_margin: 0.25
 
 model:
   encoder_hidden: 768
@@ -12,8 +12,7 @@ model:
 
 criterion_name: SoftmaxLoss
 
-criterion:
-  norm_vectors: true
+# criterion:
 #  margin: 0.3
 
 optimizer:

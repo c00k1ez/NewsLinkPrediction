@@ -1,10 +1,9 @@
-experiment_name: softmax_loss_long_bert
+experiment_name: softmax_loss_long_bert_grad_accum
 
 backbone_model: BertModel
 freeze_backbone: true
 main_model: SiameseNetwork
-model_output_prob: false
-cos_margin: 0.6
+cos_margin: 0.25
 
 model:
   encoder_hidden: 768
@@ -13,9 +12,6 @@ model:
   chunk_size: 512
 
 criterion_name: SoftmaxLoss
-
-criterion:
-  norm_vectors: true
 
 optimizer:
   lr: 5e-5
@@ -29,7 +25,8 @@ datasets:
   broadcast_pad_len: 2048
 
 loaders:
-  batch_size: 350 # for 16gb Tesla P100
+  batch_size: 300 # for 16gb Tesla P100
 
 trainer:
   max_epochs: 6
+  accumulate_grad_batches: 2
