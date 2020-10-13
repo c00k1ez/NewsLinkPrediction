@@ -73,9 +73,9 @@ class Recall_at_k:
         return [tp, fn]
 
     def compute_metric(self):
-        tp = sum(self.tp)
-        fn = sum(self.fn)
-        recall_at_k = tp / (tp + fn)
+        tp_at_k = sum(self.tp)
+        fn_at_k = sum(self.fn)
+        recall_at_k = tp_at_k / (tp_at_k + fn_at_k)
         return recall_at_k
 
 
