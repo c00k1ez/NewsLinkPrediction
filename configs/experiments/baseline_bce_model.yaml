@@ -22,6 +22,8 @@ optimizer:
 #scheduler:
 #  num_warmup_steps: 200
 
+loaders:
+  batch_size: 12
 
 trainer:
   max_epochs: 3

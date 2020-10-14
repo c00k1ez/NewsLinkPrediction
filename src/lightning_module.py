@@ -61,35 +61,37 @@ class LightningModel(pl.LightningModule):
     def validation_step(self, batch, batch_nb):
         outputs = self.forward(batch)
         loss = self.criterion(outputs)
-        labels = batch['label']
         ret = {'loss_val': loss}
-        # shape : [batch_size, ]
-        sim = torch.nn.functional.cosine_similarity(outputs['anchor'], outputs['positive'])
-        sim[sim >= self.hparams.cos_margin] = 1
-        sim[sim < self.hparams.cos_margin] = 0
-        sim = sim.type_as(labels)
-        # compute confusion matrix
-        matr = self.conf_matrix(sim, labels)
-        assert list(matr.shape) == [2, 2]
+        if self.trainer.val_dataloaders[0].dataset.mode == 'test_full':
+            labels = batch['label']
+            # shape : [batch_size, ]
+            sim = torch.nn.functional.cosine_similarity(outputs['anchor'], outputs['positive'])
+            sim[sim >= self.hparams.cos_margin] = 1
+            sim[sim < self.hparams.cos_margin] = 0
+            sim = sim.type_as(labels)
+            # compute confusion matrix
+            matr = self.conf_matrix(sim, labels)
+            assert list(matr.shape) == [2, 2]
+            ret['confusion_matrix'] = matr
         # compute recalls per batch
         self.recall_at_1(outputs)
         self.recall_at_3(outputs)
         self.recall_at_5(outputs)
-        ret['confusion_matrix'] = matr
         return ret
 
     def validation_epoch_end(self, outputs):
-        matr = sum([output['confusion_matrix'] for output in outputs])
+        if self.trainer.val_dataloaders[0].dataset.mode == 'test_full':
+            matr = sum([output['confusion_matrix'] for output in outputs])
+            # compute F1 score
+            if self.hparams.compute_f1 is True:
+                total_f1, [f1_0, f1_1] = self.f1_score(matr)
+            logging.info('log confusion matrix at {} step: \n {}'.format(self.global_step, np.matrix(matr.tolist())))
+        
         loss_val = torch.stack([x['loss_val'] for x in outputs]).mean()
-        # compute F1 score
-        if self.hparams.compute_f1 is True:
-            total_f1, [f1_0, f1_1] = self.f1_score(matr)
         # compute recall@k scores
         recall_at_1 = self.recall_at_1.compute_metric()
         recall_at_3 = self.recall_at_3.compute_metric()
         recall_at_5 = self.recall_at_5.compute_metric()
-        logging.info('log confusion matrix at {} step: \n {}'.format(self.global_step, np.matrix(matr.tolist())))
-        #print('log confusion matrix at {} step: {} \n'.format(self.global_step, np.matrix(matr.tolist())))
         log = {
             'val_loss': loss_val,
             'recall@1': recall_at_1,

@@ -73,7 +73,7 @@ if __name__ == "__main__":
         callbacks = [UnfreezingCallback(**config['callbacks']),]
     # -----------------------------------------------------
     # step 7 : init Trainer
-    gpus = '0'
+    gpus = None
     if args.gpu_id is not None:
         gpus = [args.gpu_id,]
     if args.gpus is not None:
