@@ -1,4 +1,4 @@
-experiment_name: softmax_loss_with_cosine_similarity_bert
+experiment_name: softmax_loss_baseline_bert
 
 backbone_model: BertModel
 freeze_backbone: true
