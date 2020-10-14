@@ -17,7 +17,7 @@ class PairsDataset(torch.utils.data.Dataset):
         self.tokenizer = tokenizer
         self.news_pad_len = news_pad_len
         self.broadcast_pad_len = broadcast_pad_len
-        assert mode in ['train', 'test']
+        assert mode in ['train', 'test_full', 'test']
 
     # generate only positive samples
     def _train_mode(self, data):
@@ -40,7 +40,7 @@ class PairsDataset(torch.utils.data.Dataset):
         return cleaned_data
 
     # generate pos and neg samples to calculate metrics 
-    def _test_mode(self, data):
+    def _test_full_mode(self, data):
         cleaned_data = []
         match_ids = list(data.keys())
         for match_id in match_ids:
@@ -62,10 +62,10 @@ class PairsDataset(torch.utils.data.Dataset):
 
     def _preprocess(self, data) -> List[Dict[str, str]]:
         cleaned_data = []
-        if self.mode == 'train':
+        if self.mode == 'train' or self.mode == 'test':
             cleaned_data.extend(self._train_mode(data))
         else:
-            cleaned_data.extend(self._test_mode(data))
+            cleaned_data.extend(self._test_full_mode(data))
         return cleaned_data
 
     def _preprocess_text(self, text: List[str], pad_len: int) -> Tuple[List[int], List[int]]:
