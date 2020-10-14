@@ -105,7 +105,7 @@ class PairsDataset(torch.utils.data.Dataset):
             'news_mask': news_mask
         }
 
-        if self.mode == 'test':
+        if self.mode == 'test_full':
             label = sample['label']
             label = torch.LongTensor([label])
             returned_sample['label'] = label
