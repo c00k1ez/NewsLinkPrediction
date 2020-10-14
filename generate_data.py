@@ -41,7 +41,8 @@ if __name__ == '__main__':
     parser.add_argument("--data_file", default='./data/broadcast_news.json')
     parser.add_argument("--download_data", type=bool, default=True)
     parser.add_argument("--train_size", type=float, default=0.998)
-    os.mkdir('logs/')
+    if not os.path.exists('logs/'):
+        os.mkdir('logs/')
     args = parser.parse_args()
     FILE_PATH = args.data_file
 
