@@ -33,7 +33,8 @@ class LightningModel(pl.LightningModule):
             self.criterion = criterion_class()
 
         self.conf_matrix = ConfusionMatrix(num_classes=2)
-        self.f1_score = F1_score()
+        if hparams.compute_f1 is True:
+            self.f1_score = F1_score()
         self.recall_at_1 = Recall_at_k(k=1)
         self.recall_at_3 = Recall_at_k(k=3)
         self.recall_at_5 = Recall_at_k(k=5)
@@ -81,23 +82,26 @@ class LightningModel(pl.LightningModule):
         matr = sum([output['confusion_matrix'] for output in outputs])
         loss_val = torch.stack([x['loss_val'] for x in outputs]).mean()
         # compute F1 score
-        total_f1, [f1_0, f1_1] = self.f1_score(matr)
+        if self.hparams.compute_f1 is True:
+            total_f1, [f1_0, f1_1] = self.f1_score(matr)
         # compute recall@k scores
         recall_at_1 = self.recall_at_1.compute_metric()
         recall_at_3 = self.recall_at_3.compute_metric()
         recall_at_5 = self.recall_at_5.compute_metric()
         logging.info('log confusion matrix at {} step: \n {}'.format(self.global_step, np.matrix(matr.tolist())))
         #print('log confusion matrix at {} step: {} \n'.format(self.global_step, np.matrix(matr.tolist())))
+        log = {
+            'val_loss': loss_val,
+            'recall@1': recall_at_1,
+            'recall@3': recall_at_3,
+            'recall@5': recall_at_5
+        }
+        if self.hparams.compute_f1 is True:
+            log['weighted_f1'] = total_f1
+            log['f1_0'] = f1_0
+            log['f1_1'] = f1_1
         output = {
             'val_loss': loss_val,
-            'log': {
-                'val_loss': loss_val,
-                'weighted_f1': total_f1,
-                'f1_0': f1_0,
-                'f1_1': f1_1,
-                'recall@1': recall_at_1,
-                'recall@3': recall_at_3,
-                'recall@5': recall_at_5
-            }
+            'log': log
         }
         return output
