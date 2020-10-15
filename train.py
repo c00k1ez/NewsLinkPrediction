@@ -47,7 +47,7 @@ if __name__ == "__main__":
     train = PairsDataset(train, tokenizer, **config['datasets'])
     test = PairsDataset(test, tokenizer, mode='test', **config['datasets'])
     loaders = {
-        'train_dataloader' : torch.utils.data.DataLoader(train, **config['loaders']),
+        'train_dataloader' : torch.utils.data.DataLoader(train, **config['loaders'], drop_last=True),
         'val_dataloaders' : torch.utils.data.DataLoader(test, **config['loaders'])
     }
     if 'scheduler' in config:
