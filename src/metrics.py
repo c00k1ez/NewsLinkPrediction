@@ -53,9 +53,10 @@ class Recall_at_k:
         dist = dist[mask == 1.].view(batch_size, batch_size - 1)
 
         # generate permutation
-        idx = torch.randperm(dist.nelement()).type_as(dist).long()
+        idx = torch.rand(batch_size, batch_size - 1).argsort(dim=1)
+        idx = idx.type_as(dist).long()
         # permute distance tensor
-        dist = dist.view(-1)[idx].view(batch_size, batch_size - 1)
+        dist.scatter_(1, idx, dist.detach().clone())
         # select 9 random positives for each anchor, shape [batch_size, 9]
         dist = dist[:, :self.selected_positives - 1]
         # shape [batch_size, 10]
@@ -79,8 +80,3 @@ class Recall_at_k:
         self.fn = []
         recall_at_k = tp_at_k / (tp_at_k + fn_at_k)
         return recall_at_k
-
-
-
-
-
