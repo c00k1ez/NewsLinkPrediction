@@ -108,7 +108,7 @@ if __name__ == "__main__":
     trainer.fit(model, **loaders)
     # -----------------------------------------------------
     # step 9 : validate model using test set
-    #checkpoint_path = '/'.join(checkpoint_path.split('/')[:-1])
+    checkpoint_path = '/'.join(checkpoint_path.split('/')[:-1])
     #checkpoint_path = checkpoint_path + '/' + os.listdir(checkpoint_path)[0]
     model = LightningModel.load_from_checkpoint(checkpoint_path)
     trainer.test(model, test_loader, checkpoint_path)
