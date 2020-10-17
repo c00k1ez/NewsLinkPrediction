@@ -116,7 +116,7 @@ if __name__ == '__main__':
         val = {}
         for ind in val_ind:
             val[ind] = data[ind]
-        json.dump(test, f, ensure_ascii=False, indent=4, sort_keys=True)
+        json.dump(val, f, ensure_ascii=False, indent=4, sort_keys=True)
 
     keys = list(train.keys())[:5]
     with open('./data/data_sample.json', 'w', encoding='utf-8') as f:
