@@ -44,12 +44,13 @@ if __name__ == "__main__":
     tokenizer = init_tokenizer(config)
     # -----------------------------------------------------
     # step 3 : init loaders
-    train, test = read_dataset(config.data_path, debug=False)
+    train, test, val = read_dataset(config.data_path, debug=False)
     train = PairsDataset(train, tokenizer, **config['datasets'])
+    val = PairsDataset(val, tokenizer, mode='test', **config['datasets'])
     test = PairsDataset(test, tokenizer, mode='test', **config['datasets'])
     loaders = {
         'train_dataloader' : torch.utils.data.DataLoader(train, **config['loaders'], drop_last=True),
-        'val_dataloaders' : torch.utils.data.DataLoader(test, **config['loaders'])
+        'val_dataloaders' : torch.utils.data.DataLoader(val, **config['loaders'])
     }
     if 'scheduler' in config:
         config['scheduler'].num_training_steps = len(loaders['train_dataloader']) * config['trainer'].max_epochs
