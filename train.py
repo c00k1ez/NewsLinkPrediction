@@ -52,6 +52,7 @@ if __name__ == "__main__":
         'train_dataloader' : torch.utils.data.DataLoader(train, **config['loaders'], drop_last=True),
         'val_dataloaders' : torch.utils.data.DataLoader(val, **config['loaders'])
     }
+    test_loader = torch.utils.data.DataLoader(test, **config['loaders'])
     if 'scheduler' in config:
         config['scheduler'].num_training_steps = len(loaders['train_dataloader']) * config['trainer'].max_epochs
     # -----------------------------------------------------
@@ -74,8 +75,9 @@ if __name__ == "__main__":
     if 'callbacks' in config:
         callbacks = [UnfreezingCallback(**config['callbacks']),]
     
+    checkpoint_path = config.ckeckpoints_dir + '/' + config.experiment_name + '_seed_' + str(args.seed) + '/' + config.experiment_name + '_seed_' + str(args.seed) + '_{epoch}-{recall_at_1:.3f}'
     checkpoint_callback = ModelCheckpoint(
-        filepath=config.ckeckpoints_dir + '/' + config.experiment_name + '_seed_' + str(args.seed) + '/' + config.experiment_name + '_seed_' + str(args.seed) + '_{epoch}-{recall_at_1:.3f}',
+        filepath=checkpoint_path,
         save_top_k=1,
         verbose=True,
         monitor='recall_at_1',
@@ -104,4 +106,10 @@ if __name__ == "__main__":
     # -----------------------------------------------------
     # step 8 : train model
     trainer.fit(model, **loaders)
+    # -----------------------------------------------------
+    # step 9 : validate model using test set
+    #checkpoint_path = '/'.join(checkpoint_path.split('/')[:-1])
+    #checkpoint_path = checkpoint_path + '/' + os.listdir(checkpoint_path)[0]
+    model = LightningModel.load_from_checkpoint(checkpoint_path)
+    trainer.test(model, test_loader, checkpoint_path)
 

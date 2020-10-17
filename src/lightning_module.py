@@ -79,6 +79,34 @@ class LightningModel(pl.LightningModule):
         self.recall_at_5(outputs)
         return ret
 
+    def test_step(self, batch, batch_nb):
+        outputs = self.forward(batch)
+        loss = self.criterion(outputs)
+        ret = {'loss_val': loss}
+        # compute recalls per batch
+        self.recall_at_1(outputs)
+        self.recall_at_3(outputs)
+        self.recall_at_5(outputs)
+        return ret
+
+    def test_epoch_end(self, outputs):
+        loss_val = torch.stack([x['loss_val'] for x in outputs]).mean()
+        # compute recall@k scores
+        recall_at_1 = self.recall_at_1.compute_metric()
+        recall_at_3 = self.recall_at_3.compute_metric()
+        recall_at_5 = self.recall_at_5.compute_metric()
+        log = {
+            'test_loss': loss_val,
+            'recall_at_1': recall_at_1,
+            'recall_at_3': recall_at_3,
+            'recall_at_5': recall_at_5
+        }
+        output = {
+            'test_loss': loss_val,
+            'log': log
+        }
+        return output
+    
     def validation_epoch_end(self, outputs):
         if self.trainer.val_dataloaders[0].dataset.mode == 'test_full':
             matr = sum([output['confusion_matrix'] for output in outputs])
