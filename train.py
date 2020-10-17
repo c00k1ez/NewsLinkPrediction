@@ -75,7 +75,7 @@ if __name__ == "__main__":
         callbacks = [UnfreezingCallback(**config['callbacks']),]
     
     checkpoint_callback = ModelCheckpoint(
-        filepath=config.ckeckpoints_dir + '/' + config.experiment_name + '_seed_' + args.seed + '/' + config.experiment_name + '_seed_' + args.seed + '_{epoch}-{recall_at_1:.3f}',
+        filepath=config.ckeckpoints_dir + '/' + config.experiment_name + '_seed_' + str(args.seed) + '/' + config.experiment_name + '_seed_' + str(args.seed) + '_{epoch}-{recall_at_1:.3f}',
         save_top_k=1,
         verbose=True,
         monitor='recall_at_1',
