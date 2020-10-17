@@ -97,9 +97,9 @@ class LightningModel(pl.LightningModule):
         recall_at_5 = self.recall_at_5.compute_metric()
         log = {
             'test_loss': loss_val,
-            'recall_at_1': recall_at_1,
-            'recall_at_3': recall_at_3,
-            'recall_at_5': recall_at_5
+            'test_recall_at_1': recall_at_1,
+            'test_recall_at_3': recall_at_3,
+            'test_recall_at_5': recall_at_5
         }
         output = {
             'test_loss': loss_val,
