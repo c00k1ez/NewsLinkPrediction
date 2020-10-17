@@ -17,9 +17,6 @@ optimizer:
 #scheduler:
 #  num_warmup_steps: 200
 
-trainer:
-  max_epochs: 6
-
 loaders:
   batch_size: 350 # for 16gb Tesla P100
 #  num_workers: 4
