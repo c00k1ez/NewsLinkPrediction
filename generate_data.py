@@ -40,8 +40,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_file", default='./data/broadcast_news.json')
     parser.add_argument("--download_data", type=bool, default=True)
-    parser.add_argument("--train_size", type=float, default=0.971)
-    parser.add_argument("--test_size", type=float, default=0.014)
+    parser.add_argument("--train_size", type=float, default=0.970)
+    parser.add_argument("--test_size", type=float, default=0.015)
     '''
     val_size = 1 - train_size - test_size
     '''
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     assert len(train_ind) == train_len
     test_ind = inds[train_len:train_len + test_len]
     assert len(test_ind) == test_len
-    val_ind = inds[train_len + test_len: train_len + val_len]
+    val_ind = inds[train_len + test_len:]
     assert len(val_ind) == val_len
 
     with open('./data/train.json', 'w', encoding='utf-8') as f:
