@@ -114,7 +114,7 @@ if __name__ == '__main__':
 
     with open('./data/val.json', 'w', encoding='utf-8') as f:
         val = {}
-        for ind in test_ind:
+        for ind in val_ind:
             val[ind] = data[ind]
         json.dump(test, f, ensure_ascii=False, indent=4, sort_keys=True)
 
