@@ -40,7 +40,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_file", default='./data/broadcast_news.json')
     parser.add_argument("--download_data", type=bool, default=True)
-    parser.add_argument("--train_size", type=float, default=0.985)
+    parser.add_argument("--train_size", type=float, default=0.970)
     parser.add_argument("--test_size", type=float, default=0.015)
     '''
     val_size = 1 - train_size - test_size
