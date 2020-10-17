@@ -22,7 +22,7 @@ logging.getLogger("transformers").setLevel(logging.CRITICAL)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--experiment_config', type=str, default='baseline_bce_model.yaml')
+    parser.add_argument('--experiment_config', type=str, default='softmax_loss_baseline_bert.yaml')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--use_comet', type=bool, default=False)
     parser.add_argument('--gpu_id', type=int, default=None)
