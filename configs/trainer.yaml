@@ -1,7 +1,8 @@
+ckeckpoints_dir: './checkpoints'
+
 trainer:
   max_epochs: 1
   val_check_interval: 0.2
   precision: 16
   log_save_interval: 20
-  default_root_dir: './checkpoints'
   #gpus: 1

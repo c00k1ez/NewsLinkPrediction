@@ -10,6 +10,7 @@ from src.lightning_module import LightningModel
 from src.callbacks import UnfreezingCallback
 
 import pytorch_lightning as pl
+from pytorch_lightning.callbacks import ModelCheckpoint
 import transformers
 
 import os
@@ -71,6 +72,14 @@ if __name__ == "__main__":
     callbacks = None
     if 'callbacks' in config:
         callbacks = [UnfreezingCallback(**config['callbacks']),]
+    
+    checkpoint_callback = ModelCheckpoint(
+        filepath=config.ckeckpoints_dir + '/' + config.experiment_name + '/' + config.experiment_name + '_{epoch}-{recall_at_1:.3f}',
+        save_top_k=1,
+        verbose=True,
+        monitor='recall_at_1',
+        mode='max'
+    )
     # -----------------------------------------------------
     # step 7 : init Trainer
     gpus = None
@@ -88,10 +97,10 @@ if __name__ == "__main__":
         gpus=gpus,
         distributed_backend=args.distributed_backend,
         fast_dev_run=args.fast_dev_run,
-        callbacks=callbacks
+        callbacks=callbacks,
+        checkpoint_callback=checkpoint_callback
     )
     # -----------------------------------------------------
     # step 8 : train model
     trainer.fit(model, **loaders)
 
-    trainer.save_checkpoint(config.trainer.default_root_dir + '/{}_latest.chpt'.format(config.experiment_name))

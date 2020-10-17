@@ -94,9 +94,9 @@ class LightningModel(pl.LightningModule):
         recall_at_5 = self.recall_at_5.compute_metric()
         log = {
             'val_loss': loss_val,
-            'recall@1': recall_at_1,
-            'recall@3': recall_at_3,
-            'recall@5': recall_at_5
+            'recall_at_1': recall_at_1,
+            'recall_at_3': recall_at_3,
+            'recall_at_5': recall_at_5
         }
         if self.hparams.compute_f1 is True:
             log['weighted_f1'] = total_f1
