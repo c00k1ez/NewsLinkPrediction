@@ -27,6 +27,8 @@ def get_config(
 
     exp_cfg = omegaconf.OmegaConf.load(exp_path_dir + exp_path)
     cfg = omegaconf.OmegaConf.merge(base_cfg, exp_cfg)
+    if 'update_coeffs' in cfg.model:
+        cfg.model.update_coeffs = tuple(map(float, cfg.model.update_coeffs.split()))
     return cfg
 
 def seed_all(seed: int) -> None:
