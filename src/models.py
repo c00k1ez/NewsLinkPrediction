@@ -271,7 +271,7 @@ class SiameseMemoryNetwork(nn.Module):
             attention_hidden: int = 128,
             n_heads=4,
             update_coeffs=(0.75, 0.25),
-            input_size=758,
+            input_size=768,
             output_size=768,
             mem_elements=16,
             k=4

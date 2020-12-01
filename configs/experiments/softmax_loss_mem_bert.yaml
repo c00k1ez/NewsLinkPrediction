@@ -13,7 +13,7 @@ model:
   attention_hidden: 128
   n_heads: 4
   update_coeffs: 0.75 0.25
-  input_size: 758
+  input_size: 768
   output_size: 768
   mem_elements: 16
   k: 4
@@ -32,8 +32,8 @@ datasets:
   broadcast_pad_len: 2048
 
 loaders:
-  batch_size: 350 # for 16gb Tesla P100
+  batch_size: 233
 
 trainer:
-  accumulate_grad_batches: 2
-  max_epochs: 20
+  accumulate_grad_batches: 3
+  max_epochs: 30
