@@ -31,8 +31,11 @@ if __name__ == "__main__":
     parser.add_argument('--distributed_backend', type=str, default=None, choices=[None, 'ddp', 'ddp_cpu', 'dp'])
     parser.add_argument('--fast_dev_run', type=bool, default=False)
     parser.add_argument('--test_only', type=bool, default=False)
+    parser.add_argument('--experiment_key', type=str, default=None)
 
     args = parser.parse_args()
+
+    assert args.experiment_key is not None
 
     assert args.gpu_id is None or args.gpus is None
 
@@ -66,7 +69,8 @@ if __name__ == "__main__":
         )
     if 'logger' in config and args.use_comet:
         comet_logger = pl.loggers.CometLogger(**config['logger'], experiment_name=config.experiment_name)
-        comet_logger.experiment.add_tag('Recall')
+        comet_logger.experiment = comet_ml.ExistingExperiment(**config['logger'], previous_experiment=args.experiment_key)
+        #comet_logger.experiment.add_tag('Recall')
         logger = [logger, comet_logger]
     
     gpus = None
