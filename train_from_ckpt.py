@@ -69,8 +69,8 @@ if __name__ == "__main__":
         )
     if 'logger' in config and args.use_comet:
         comet_logger = pl.loggers.CometLogger(**config['logger'], experiment_name=config.experiment_name)
-        comet_logger.experiment = comet_ml.ExistingExperiment(**config['logger'], previous_experiment=args.experiment_key)
-        #comet_logger.experiment.add_tag('Recall')
+        #comet_logger.experiment = comet_ml.ExistingExperiment(**config['logger'], previous_experiment=args.experiment_key)
+        comet_logger.experiment.add_tag('Recall')
         logger = [logger, comet_logger]
     
     gpus = None
