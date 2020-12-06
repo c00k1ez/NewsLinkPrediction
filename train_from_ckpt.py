@@ -89,3 +89,6 @@ if __name__ == "__main__":
     )
 
     trainer.fit(model, **loaders)
+
+    model = LightningModel.load_from_checkpoint(full_ckpt_path)
+    trainer.test(model, test_loader, full_ckpt_path)
