@@ -39,7 +39,7 @@ if __name__ == "__main__":
     pl.seed_everything(args.seed)
 
     full_ckpt_path = './checkpoints/' + args.checkpoint_name + '/'
-    full_ckpt_path = full_ckpt_path + os.listdir(full_ckpt_path)
+    full_ckpt_path = full_ckpt_path + os.listdir(full_ckpt_path)[0]
 
     config = torch.load(full_ckpt_path)['hyper_parameters']
 
