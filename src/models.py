@@ -323,10 +323,10 @@ class SiameseMemoryNetwork(nn.Module):
         '''
         for br, attn_mask in zip(broadcast, broadcast_mask):
             enc_output = self.encoder(br, attention_mask=attn_mask)[0]
-            #br = br.unsqueeze()
-            #attn_mask = attn_mask.unsqueeze()
+            # br = br.unsqueeze()
+            # attn_mask = attn_mask.unsqueeze()
             mem_outputs = self.memory_encoder(
-               # br,
+                # br,
                 enc_output,
                 memory=prev_memory,
                 attention_mask=attn_mask,
