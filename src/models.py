@@ -310,10 +310,22 @@ class SiameseMemoryNetwork(nn.Module):
         mem_attn_weights = []
         first_step = True
         prev_memory = None
+
+        num_chunks = len(broadcast)
+        batch_size, chunk_size = broadcast[0].shape
+        # List[torch.tensor([batch_size, chunk_size,])] -> torch.tensor([num_chunks * batch_size, chunk_size])
+        broadcast = torch.stack(broadcast).view(-1, chunk_size)
+        broadcast_mask = torch.stack(broadcast_mask).view(-1, chunk_size)
+        broadcast = self.encoder(broadcast, attention_mask=broadcast_mask)[0]
+        broadcast = torch.split(broadcast.view(num_chunks, batch_size, chunk_size, -1), 1, dim=0)
+        broadcast_mask = torch.split(broadcast_mask.view(num_chunks, batch_size, chunk_size), 1, dim=0)
+
         for br, attn_mask in zip(broadcast, broadcast_mask):
-            enc_output = self.encoder(br, attention_mask=attn_mask)[0]
+            # enc_output = self.encoder(br, attention_mask=attn_mask)[0]
+            br = br.unsqueeze()
+            attn_mask = attn_mask.unsqueeze()
             mem_outputs = self.memory_encoder(
-                enc_output,
+                br,
                 memory=prev_memory,
                 attention_mask=attn_mask,
                 first_step=first_step,
