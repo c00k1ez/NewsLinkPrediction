@@ -72,7 +72,7 @@ class PairsDataset(torch.utils.data.Dataset):
         text_mask = [1] * len(text) + [0] * (pad_len - len(text))
         text = text + [self.tokenizer.pad_token] * (pad_len - len(text))
         assert len(text) == len(text_mask) == pad_len
-        text = self.tokenizer.encode(text, add_special_tokens=False)
+        text = self.tokenizer.convert_tokens_to_ids(text)
         return text, text_mask
 
     def __len__(self):

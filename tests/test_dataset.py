@@ -42,7 +42,7 @@ class TestDataset:
         tokenizer = transformers.AutoTokenizer.from_pretrained("DeepPavlov/rubert-base-cased")
         with open("./data/data_sample.json", "r", encoding="utf-8") as f:
             data = json.load(f)
-        ds = PairsDataset(data, tokenizer, mode="test", news_pad_len=30, broadcast_pad_len=30)
+        ds = PairsDataset(data, tokenizer, mode="test_full", news_pad_len=30, broadcast_pad_len=30)
         pos_cnt = 0
         for i in range(len(ds)):
             pos_cnt += ds[i]["label"][0].item()

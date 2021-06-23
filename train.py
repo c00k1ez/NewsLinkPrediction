@@ -95,9 +95,6 @@ if __name__ == "__main__":
     if args.gpus is not None:
         gpus = args.gpus
 
-    if config.trainer.default_root_dir is not None:
-        config.trainer.default_root_dir = config.trainer.default_root_dir + "/" + config.experiment_name
-
     resume_from_checkpoint = None
     if args.resume_from_checkpoint:
         resume_from_checkpoint = dirname + "/" + os.listdir(dirname)[0]
