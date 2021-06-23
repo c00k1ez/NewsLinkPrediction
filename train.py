@@ -75,7 +75,7 @@ if __name__ == "__main__":
     dirname = f"{config.ckeckpoints_dir}/{config.experiment_name}_seed_{str(args.seed)}/"
     filename = config.experiment_name + "_seed_" + str(args.seed) + "_{epoch}-{recall_at_1:.3f}"
     checkpoint_callback = ModelCheckpoint(
-        dirname=dirname, filename=filename, save_top_k=1, verbose=True, monitor="recall_at_1", mode="max"
+        dirpath=dirname, filename=filename, save_top_k=1, verbose=True, monitor="recall_at_1", mode="max"
     )
     if callbacks is None:
         callbacks = [
