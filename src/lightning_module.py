@@ -30,9 +30,9 @@ class LightningModel(pl.LightningModule):
         else:
             self.criterion = criterion_class()
 
-        self.recall_at_1 = RetrievalRecall(k=1)
-        self.recall_at_3 = RetrievalRecall(k=3)
-        self.recall_at_5 = RetrievalRecall(k=5)
+        self.recall_at_1 = RetrievalRecall(k=1).clone()
+        self.recall_at_3 = RetrievalRecall(k=3).clone()
+        self.recall_at_5 = RetrievalRecall(k=5).clone()
 
     def configure_optimizers(self):
         opt = transformers.AdamW(self.siamese_model.parameters(), **self.hparams["optimizer"])
@@ -58,7 +58,7 @@ class LightningModel(pl.LightningModule):
         # compute recalls per batch
         distance = outputs["anchor"] @ outputs["positive"].t()
         target = torch.eye(distance.shape[0]).type_as(distance).long()
-        inds = torch.arange(target.shape[0]).unsqueeze(-1).repeat(1, 10).type_as(target)
+        inds = torch.arange(target.shape[0]).unsqueeze(-1).repeat(1, distance.shape[0]).type_as(target)
         self.log(
             "recall_at_1",
             self.recall_at_1(distance, target, indexes=inds),
@@ -91,7 +91,7 @@ class LightningModel(pl.LightningModule):
 
         distance = outputs["anchor"] @ outputs["positive"].t()
         target = torch.eye(distance.shape[0]).type_as(distance).long()
-        inds = torch.arange(target.shape[0]).unsqueeze(-1).repeat(1, 10).type_as(target)
+        inds = torch.arange(target.shape[0]).unsqueeze(-1).repeat(1, distance.shape[0]).type_as(target)
         self.log(
             "test_recall_at_1",
             self.recall_at_1(distance, target, indexes=inds),
