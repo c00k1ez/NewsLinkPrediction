@@ -2,7 +2,8 @@ ckeckpoints_dir: './checkpoints'
 
 trainer:
   max_epochs: 10
-  val_check_interval: 0.2
+  val_check_interval: 0.3
   precision: 16
-  log_save_interval: 20
+  amp_backend: 'native'
+  gradient_clip_val: 5.0
   #gpus: 1
