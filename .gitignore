@@ -1,11 +1,11 @@
-data/*
+data/
 .vscode/
 .pytest_cache/
 __pycache__/
 configs/logger.yaml
-lightning_logs/*
+lightning_logs/
 .DS_Store
-lightning_logs_esports-research/*
-logs/*
-checkpoints/*
+lightning_logs_esports-research/
+logs/
+checkpoints/
 notebooks/

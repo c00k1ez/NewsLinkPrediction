@@ -1,0 +1,13 @@
+[flake8]
+ignore = D203,F401,E203,W503,E231
+exclude =
+    # No need to traverse our git directory
+    .git,
+    # There's no value in checking cache directories
+    __pycache__,
+    build,
+    dist,
+    .pytest_cache,
+    .vscode
+max-complexity = 10
+max-line-length = 119

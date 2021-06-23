@@ -3,7 +3,6 @@ experiment_name: softmax_loss_long_bert_grad_accum
 backbone_model: BertModel
 freeze_backbone: true
 main_model: SiameseNetwork
-cos_margin: 0.25
 
 model:
   encoder_hidden: 768
@@ -15,10 +14,10 @@ criterion_name: SoftmaxLoss
 
 optimizer:
   lr: 5e-5
-#  weight_decay: 1e-4
+  weight_decay: 1e-5
 
-#scheduler:
-#  num_warmup_steps: 200
+scheduler:
+  num_warmup_steps: 500
 
 datasets:
   news_pad_len: 512
