@@ -2,6 +2,8 @@ data_path: ./data/
 
 compute_f1: false
 
+use_custom_collate_fn: false
+
 datasets:
   news_pad_len: 512
   broadcast_pad_len: 512

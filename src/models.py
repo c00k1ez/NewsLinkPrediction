@@ -71,7 +71,7 @@ class BaselineSiameseNetwork(nn.Module):
         broadcast = self.prehead_dropout(self.pool(broadcast, broadcast_mask))
 
         # [batch_size, news_seq_len, encoder_hidden]
-        news = self.encoder(news, attention_mask=news_mask)['last_hidden_state']
+        news = self.encoder(news, attention_mask=news_mask)["last_hidden_state"]
         # [batch_size, encoder_hidden]
         news = self.prehead_dropout(self.pool(news, news_mask))
 
@@ -114,7 +114,7 @@ class SiameseNetwork(nn.Module):
 
         encoded_broadcast = []
         for br, attn_mask in zip(broadcast, broadcast_mask):
-            encoded_broadcast.append(self.encoder(br, attention_mask=attn_mask)['last_hidden_state'])
+            encoded_broadcast.append(self.encoder(br, attention_mask=attn_mask)["last_hidden_state"])
         # encoded_broadcast - list of 4 tensors with shape [batch_size, chunk_size, 768]
         assert len(encoded_broadcast) == 4
         pooled = []
@@ -127,7 +127,7 @@ class SiameseNetwork(nn.Module):
         pooled = self.prehead_dropout(pooled)
 
         # [batch_size, news_seq_len, encoder_hidden]
-        news = self.encoder(news, attention_mask=news_mask)['last_hidden_state']
+        news = self.encoder(news, attention_mask=news_mask)["last_hidden_state"]
         # [batch_size, encoder_hidden]
         news = self.prehead_dropout(self.pool(news, news_mask))
 

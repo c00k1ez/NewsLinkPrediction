@@ -3,7 +3,7 @@ import json
 import torch
 import transformers
 
-from src.dataset import PairsDataset
+from src.dataset import PairsDataset, collate_fn
 
 
 class TestDataset:
@@ -47,3 +47,12 @@ class TestDataset:
         for i in range(len(ds)):
             pos_cnt += ds[i]["label"][0].item()
         assert (len(ds) == 505) and (pos_cnt == 101)
+
+    def test_collate_fn(self):
+        tokenizer = transformers.AutoTokenizer.from_pretrained("DeepPavlov/rubert-base-cased")
+        with open("./data/data_sample.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+        ds = PairsDataset(data, tokenizer, mode="train", news_pad_len=512, broadcast_pad_len=512)
+        loader = torch.utils.data.DataLoader(ds, batch_size=100, collate_fn=collate_fn)
+        batch = next(iter(loader))
+        assert batch["news"].size(-1) == 478

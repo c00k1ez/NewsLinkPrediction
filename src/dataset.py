@@ -105,3 +105,22 @@ class PairsDataset(torch.utils.data.Dataset):
             returned_sample["label"] = label
 
         return returned_sample
+
+
+def collate_fn(samples):
+    batch = {}
+    for sample in samples:
+        for key in sample:
+            if key in batch:
+                batch[key] = torch.cat([batch[key], sample[key].unsqueeze(0)], dim=0)
+            else:
+                batch[key] = sample[key].unsqueeze(0)
+    for pref in [
+        "broadcast",
+        "news",
+    ]:
+        max_len = batch[f"{pref}_mask"].sum(dim=-1).max()
+        for key in batch:
+            if pref in key:
+                batch[key] = batch[key][:, :max_len]
+    return batch

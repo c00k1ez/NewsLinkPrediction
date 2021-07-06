@@ -6,9 +6,10 @@ import comet_ml
 import pytorch_lightning as pl
 import torch
 from pytorch_lightning.callbacks import ModelCheckpoint
+from torch.utils.data import DataLoader
 
 from src.callbacks import UnfreezingCallback
-from src.dataset import PairsDataset
+from src.dataset import PairsDataset, collate_fn
 from src.lightning_module import LightningModel
 from src.utils import get_config, init_tokenizer, read_dataset
 
@@ -46,11 +47,14 @@ if __name__ == "__main__":
     train = PairsDataset(train, tokenizer, **config["datasets"])
     val = PairsDataset(val, tokenizer, mode="test", **config["datasets"])
     test = PairsDataset(test, tokenizer, mode="test", **config["datasets"])
+    custom_collate_fn = None
+    if config["use_custom_collate_fn"]:
+        custom_collate_fn = collate_fn
     loaders = {
-        "train_dataloader": torch.utils.data.DataLoader(train, **config["loaders"], drop_last=True),
-        "val_dataloaders": torch.utils.data.DataLoader(val, **config["loaders"]),
+        "train_dataloader": DataLoader(train, **config["loaders"], drop_last=True, collate_fn=custom_collate_fn),
+        "val_dataloaders": DataLoader(val, **config["loaders"], collate_fn=custom_collate_fn),
     }
-    test_loader = torch.utils.data.DataLoader(test, **config["loaders"])
+    test_loader = DataLoader(test, **config["loaders"])
     if "scheduler" in config:
         config["scheduler"].num_training_steps = len(loaders["train_dataloader"]) * config["trainer"].max_epochs
     # -----------------------------------------------------

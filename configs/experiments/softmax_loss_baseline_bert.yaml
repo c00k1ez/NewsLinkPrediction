@@ -3,7 +3,7 @@ experiment_name: softmax_loss_baseline_bert
 backbone_model: BertModel
 freeze_backbone: true
 main_model: BaselineSiameseNetwork
-cos_margin: 0.25
+use_custom_collate_fn: true
 
 model:
   encoder_hidden: 768
