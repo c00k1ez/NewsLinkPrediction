@@ -16,7 +16,7 @@ class LightningModel(pl.LightningModule):
         super(LightningModel, self).__init__()
         logging.basicConfig(filename="logs/{}.log".format(hparams.experiment_name), level=logging.INFO)
 
-        self.save_hyperparameters(hparams)
+        self.save_hyperparameters()
         backbone_model_class = get_class_by_name(transformers, hparams.backbone_model)
         backbone_model = backbone_model_class.from_pretrained(hparams.model_name)
         if hasattr(hparams, "freeze_backbone") and hparams.freeze_backbone:
