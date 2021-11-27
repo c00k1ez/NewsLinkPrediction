@@ -24,7 +24,7 @@ if __name__ == "__main__":
     parser.add_argument("--use_comet", dest="use_comet", action="store_true")
     parser.add_argument("--gpu_id", type=int, default=None)
     parser.add_argument("--gpus", type=int, default=None)
-    parser.add_argument("--distributed_backend", type=str, default=None, choices=[None, "ddp", "ddp_cpu", "dp"])
+    parser.add_argument("--strategy", type=str, default=None, choices=[None, "ddp", "ddp_cpu", "dp"])
     parser.add_argument("--fast_dev_run", dest="fast_dev_run", action="store_true")
     parser.add_argument("--resume_from_checkpoint", dest="resume_from_checkpoint", action="store_true")
     parser.set_defaults(fast_dev_run=False, use_comet=False, resume_from_checkpoint=False)
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     if config["use_custom_collate_fn"]:
         custom_collate_fn = collate_fn
     loaders = {
-        "train_dataloader": DataLoader(train, **config["loaders"], drop_last=True, collate_fn=custom_collate_fn),
+        "train_dataloaders": DataLoader(train, **config["loaders"], drop_last=True, collate_fn=custom_collate_fn),
         "val_dataloaders": DataLoader(val, **config["loaders"], collate_fn=custom_collate_fn),
     }
     test_loader = DataLoader(test, **config["loaders"])
@@ -106,7 +106,7 @@ if __name__ == "__main__":
         **config["trainer"],
         logger=logger,
         gpus=gpus,
-        distributed_backend=args.distributed_backend,
+        strategy=args.strategy,
         fast_dev_run=args.fast_dev_run,
         callbacks=callbacks,
         resume_from_checkpoint=resume_from_checkpoint,
