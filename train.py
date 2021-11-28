@@ -57,7 +57,7 @@ if __name__ == "__main__":
     }
     test_loader = DataLoader(test, **config["loaders"])
     if "scheduler" in config:
-        config["scheduler"].num_training_steps = len(loaders["train_dataloader"]) * config["trainer"].max_epochs
+        config["scheduler"].num_training_steps = len(loaders["train_dataloaders"]) * config["trainer"].max_epochs
     # -----------------------------------------------------
     # step 4 : init model
     model = LightningModel(config)
