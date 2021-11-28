@@ -1,9 +1,8 @@
-experiment_name: softmax_loss_baseline_bert
+experiment_name: softmax_loss_baseline_bert_updated
 
 backbone_model: BertModel
 freeze_backbone: true
 main_model: BaselineSiameseNetwork
-use_custom_collate_fn: true
 
 model:
   encoder_hidden: 768
@@ -14,9 +13,9 @@ criterion_name: SoftmaxLoss
 optimizer:
   lr: 5e-5
 
-#scheduler:
-#  num_warmup_steps: 200
+scheduler:
+  num_warmup_steps: 500
 
 loaders:
-  batch_size: 350 # for 16gb Tesla P100
-#  num_workers: 4
+  batch_size: 300 # for 16gb Tesla P100
+  num_workers: 4
