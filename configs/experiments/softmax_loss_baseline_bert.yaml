@@ -17,5 +17,5 @@ scheduler:
   num_warmup_steps: 500
 
 loaders:
-  batch_size: 300 # for 16gb Tesla P100
+  batch_size: 200 # for 16gb Tesla P100
   num_workers: 4
