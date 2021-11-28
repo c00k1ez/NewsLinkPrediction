@@ -107,7 +107,7 @@ class PairsDataset(torch.utils.data.Dataset):
         return returned_sample
 
 
-def collate_fn(samples):
+def collate_fn(samples, trim_broadcast=True):
     batch = {}
     for sample in samples:
         for key in sample:
@@ -115,10 +115,17 @@ def collate_fn(samples):
                 batch[key] = torch.cat([batch[key], sample[key].unsqueeze(0)], dim=0)
             else:
                 batch[key] = sample[key].unsqueeze(0)
-    for pref in [
-        "broadcast",
-        "news",
-    ]:
+    prefixes = (
+        [
+            "broadcast",
+            "news",
+        ]
+        if trim_broadcast
+        else [
+            "news",
+        ]
+    )
+    for pref in prefixes:
         max_len = batch[f"{pref}_mask"].sum(dim=-1).max()
         for key in batch:
             if pref in key:

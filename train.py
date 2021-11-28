@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+from functools import partial
 
 import comet_ml
 import pytorch_lightning as pl
@@ -49,7 +50,7 @@ if __name__ == "__main__":
     test = PairsDataset(test, tokenizer, mode="test", **config["datasets"])
     custom_collate_fn = None
     if config["use_custom_collate_fn"]:
-        custom_collate_fn = collate_fn
+        custom_collate_fn = partial(collate_fn, trim_broadcast=config["trim_broadcast"])
     loaders = {
         "train_dataloaders": DataLoader(train, **config["loaders"], drop_last=True, collate_fn=custom_collate_fn),
         "val_dataloaders": DataLoader(val, **config["loaders"], collate_fn=custom_collate_fn),

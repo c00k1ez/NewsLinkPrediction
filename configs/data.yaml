@@ -2,7 +2,8 @@ data_path: ./data/
 
 compute_f1: false
 
-use_custom_collate_fn: false
+use_custom_collate_fn: true
+trim_broadcast: false
 
 datasets:
   news_pad_len: 512
