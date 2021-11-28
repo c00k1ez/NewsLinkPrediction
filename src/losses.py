@@ -130,6 +130,14 @@ class SoftmaxLoss(torch.nn.Module):
         assert reduction in ["mean", "sum", "none"]
         self.criterion = torch.nn.CrossEntropyLoss(reduction=reduction)
 
+    def compute_distance(self, t1, t2):
+        if self.norm_vectors:
+            t1 = F.normalize(t1)
+            t2 = F.normalize(t2)
+
+        scores = t1 @ t2.t()
+        return scores
+
     # model_outputs = {'anchor': torch.FloatTensor, 'positive': torch.FloatTensor}
     def forward(self, model_outputs: Dict[str, Union[torch.FloatTensor, torch.cuda.FloatTensor]]):
         anchor = model_outputs["anchor"]  # shape [batch_size, embedding_size]
@@ -137,11 +145,7 @@ class SoftmaxLoss(torch.nn.Module):
 
         batch_size, emb_dim = pos.size()
 
-        if self.norm_vectors:
-            anchor = F.normalize(anchor)
-            pos = F.normalize(pos)
-
-        scores = anchor @ pos.t()
+        scores = self.compute_distance(anchor, pos)
 
         if self.margin is not None:
             scores -= (torch.eye(batch_size) * self.margin).type_as(pos)
